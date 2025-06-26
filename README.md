@@ -27,6 +27,8 @@ Below are the deliverables and tasks associated with this project:
 
 ## ✍️ Coding Conventions
 
+Always rebase!
+
 ### 📦 Commit Message Format
 
 Please follow the conventional commit format for clean and meaningful version history:
