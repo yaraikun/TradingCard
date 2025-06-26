@@ -8,7 +8,7 @@
 
 Below are the deliverables and tasks associated with this project:
 
-* [ ] UML Class Diagram
+* [x] UML Class Diagram
 * [ ] ZIP file of the implemented code (with Javadoc documentation)
 * [ ] Test Script
 * [ ] Demo Video
