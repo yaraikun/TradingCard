@@ -39,6 +39,23 @@ public class Binder {
         return true;
     }
 
+    public Card removeCardAtIndex(int index) {
+        if (index < 0 || index >= this.cardCount) {
+            return null; 
+        }
+
+        Card removedCard = this.cards[index];
+        
+        for (int i = index; i < this.cardCount - 1; i++) {
+            this.cards[i] = this.cards[i + 1];
+        }
+
+        this.cards[this.cardCount - 1] = null; 
+        this.cardCount--;
+
+        return removedCard;
+    }
+
     public boolean isFull() {
         return this.cardCount >= MAX_CAPACITY;
     }
