@@ -27,4 +27,19 @@ public class Binder {
         System.arraycopy(this.cards, 0, displayCards, 0, this.cardCount);
         return displayCards;
     }
+
+    public boolean addCard(Card card) {
+        if (isFull()) {
+            return false;
+        }
+
+        this.cards[this.cardCount] = card;
+        this.cardCount++;
+
+        return true;
+    }
+
+    public boolean isFull() {
+        return this.cardCount >= MAX_CAPACITY;
+    }
 }
