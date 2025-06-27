@@ -13,4 +13,18 @@ public class Binder {
         this.cards = new Card[MAX_CAPACITY];
         this.cardCount = 0;
     }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public int getCardCount() {
+        return this.cardCount;
+    }
+
+    public Card[] getCardsForDisplay() {
+        Card[] displayCards = new Card[this.cardCount];
+        System.arraycopy(this.cards, 0, displayCards, 0, this.cardCount);
+        return displayCards;
+    }
 }
