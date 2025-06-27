@@ -101,9 +101,15 @@ public class Deck {
      *         otherwise.
      */
     public boolean isFull() {
-        // Ain't no way i just unironically did the meme if true return true.
-        // return (this.cardCount >= MAX_CAPACITY) ? true : false;
         return this.cardCount >= MAX_CAPACITY;
+    }
+
+    public boolean containsCard(String name) {
+        for (int i = 0; i < this.cardCount; i++)
+            if (this.cards[i].getName().equalsIgnoreCase(name))
+                return true;
+
+        return false;
     }
 }
 
