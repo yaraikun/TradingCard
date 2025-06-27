@@ -6,21 +6,21 @@ package com.tcis;
  */
 public class Card {
 
-    /**
-     * Constants
-     */
+    // --- Constants ---
+
     public static final double NORMAL_MULTIPLIER = 1.0;       // No increase
     public static final double EXTENDED_ART_MULTIPLIER = 1.5; // 50% increase
     public static final double FULL_ART_MULTIPLIER = 2.0;     // 100% increase
     public static final double ALT_ART_MULTIPLIER = 3.0;      // 200% increase
 
-    /**
-     * Properties
-     */
+    // --- Properties ---
+
     private final String name;
     private final String rarity;
     private final String variant;
     private final double baseValue;
+
+    // --- Constructors ---
 
     /**
      * Constructs a new Card with all its essential properties.
@@ -37,13 +37,25 @@ public class Card {
         this.baseValue = baseValue;
     }
 
-    /**
-     * Getters
-     */
-    public String getName() { return name; }
-    public String getRarity() { return rarity; }
-    public String getVariant() { return variant; }
-    public double getBaseValue() { return baseValue; }
+    // --- Getters ---
+
+    public String getName() {
+        return name;
+    }
+
+    public String getRarity() {
+        return rarity;
+    }
+
+    public String getVariant() {
+        return variant;
+    }
+
+    public double getBaseValue() {
+        return baseValue;
+    }
+
+    // --- Methods ---
 
     /**
      * Calculates the final dollar value of the card based on its variant.
