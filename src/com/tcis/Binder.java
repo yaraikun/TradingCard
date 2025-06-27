@@ -8,14 +8,15 @@ package com.tcis;
  */
 public class Binder {
 
-    // --- Properties ---
+    // --- Constants ---
 
     public static final int MAX_CAPACITY = 20;
+
+    // --- Properties ---
 
     private final String name;
     private final Card[] cards; 
     private int cardCount;      
-
 
     // --- Constructors ---
 
@@ -102,6 +103,8 @@ public class Binder {
      *         otherwise.
      */
     public boolean isFull() {
+        // Ain't no way i just unironically did the meme if true return true.
+        // return (this.cardCount >= MAX_CAPACITY) ? true : false;
         return this.cardCount >= MAX_CAPACITY;
     }
 }
