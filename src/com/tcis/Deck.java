@@ -106,6 +106,12 @@ public class Deck {
         return this.cardCount >= MAX_CAPACITY;
     }
 
+    /**
+     * Checks if a card with a given name is already in the deck.
+     *
+     * @param name The name of the card to check for.
+     * @return true if a card with that name exists, false otherwise.
+     */
     public boolean containsCard(String name) {
         for (int i = 0; i < this.cardCount; i++)
             if (this.cards[i].getName().equalsIgnoreCase(name))
