@@ -1,6 +1,14 @@
 package com.tcis;
 
+/**
+ * Represents a trading binder that can hold a fixed number of cards.
+ * 
+ * Note:
+ *     Binders allow duplicate cards.
+ */
 public class Binder {
+
+    // --- Properties ---
 
     public static final int MAX_CAPACITY = 20;
 
@@ -8,11 +16,21 @@ public class Binder {
     private final Card[] cards; 
     private int cardCount;      
 
+
+    // --- Constructors ---
+
+    /**
+     * Constructs a new, empty Binder with a given name.
+     *
+     * @param name The name of the Binder.
+     */
     public Binder(String name) {
         this.name = name;
         this.cards = new Card[MAX_CAPACITY];
         this.cardCount = 0;
     }
+
+    // --- Getters ---
 
     public String getName() {
         return this.name;
@@ -22,12 +40,26 @@ public class Binder {
         return this.cardCount;
     }
 
+    /**
+     * Returns a copy of the cards array.
+     * Defensively copies to prevent unintentional modification.
+     *
+     * @return A new array containing the cards currently in the binder.
+     */
     public Card[] getCardsForDisplay() {
         Card[] displayCards = new Card[this.cardCount];
         System.arraycopy(this.cards, 0, displayCards, 0, this.cardCount);
         return displayCards;
     }
 
+    // --- Methods ---
+
+    /**
+     * Adds a card to the binder if there is space.
+     *
+     * @param card The card to add.
+     * @return true if the card was added successfully, false otherwise.
+     */
     public boolean addCard(Card card) {
         if (isFull()) {
             return false;
@@ -39,6 +71,13 @@ public class Binder {
         return true;
     }
 
+    /**
+     * Pops a card from the binder at a specific index.
+     * Shifts all elements to the right of the index, to the left.
+     *
+     * @param index The index of the card to remove.
+     * @return The card that was removed, or null if the index is invalid.
+     */
     public Card removeCardAtIndex(int index) {
         if (index < 0 || index >= this.cardCount) {
             return null; 
@@ -56,6 +95,12 @@ public class Binder {
         return removedCard;
     }
 
+    /**
+     * Checks if binder is full.
+     *
+     * @return true if the card count has reached max capacity, false 
+     *         otherwise.
+     */
     public boolean isFull() {
         return this.cardCount >= MAX_CAPACITY;
     }
