@@ -5,31 +5,62 @@ import com.tcis.backend.CollectionManager;
 import com.tcis.backend.DeckManager;
 import java.util.Scanner;
 
-/**
- * The main orchestrator for the entire UI.
- * It displays the primary menus and delegates the chosen actions to the Handler class,
- * effectively managing the application's user-facing state machine.
- */
+/*
+    Class: Menu
+    
+    Purpose:
+    The main orchestrator for the entire UI. It displays the primary menus and
+    delegates the chosen actions to the Handler class, effectively managing the
+    application's user-facing state machine. It controls the flow from one menu
+    to another.
+*/
 public class Menu {
+    /*
+        Attribute: scanner
+        
+        Purpose:
+        The single, global Scanner instance used for all user input throughout
+        the application.
+    */
     private final Scanner scanner;
+
+    /*
+        Attribute: handler
+        
+        Purpose:
+        A reference to the single Handler instance, which contains the logic to
+        execute all possible user actions.
+    */
     private final Handler handler;
 
-    /**
-     * Constructs the Menu system, creating the single Handler instance that
-     * will execute all user actions.
-     * @param scanner The global Scanner instance.
-     * @param cm The CollectionManager instance from the backend.
-     * @param bm The BinderManager instance from the backend.
-     * @param dm The DeckManager instance from the backend.
-     */
+    /*
+        Constructor: Menu
+        
+        Purpose:
+        Initializes the Menu system by creating the single Handler instance that
+        will execute all user actions. It injects the necessary backend managers
+        and the scanner into the Handler.
+        
+        @param scanner: The global Scanner instance.
+        @param cm: The CollectionManager instance from the backend.
+        @param bm: The BinderManager instance from the backend.
+        @param dm: The DeckManager instance from the backend.
+    */
     public Menu(Scanner scanner, CollectionManager cm, BinderManager bm, DeckManager dm) {
         this.scanner = scanner;
         this.handler = new Handler(scanner, cm, bm, dm);
     }
 
-    /**
-     * Runs the top-level main menu loop.
-     */
+    /*
+        Method: runMainMenu
+        
+        Purpose:
+        Runs the top-level main menu loop. This is the primary loop of the
+        application's UI, which continues until the user chooses to exit.
+        
+        Returns:
+        void. The method terminates when the application is exited.
+    */
     public void runMainMenu() {
         boolean running = true;
         while (running) {
@@ -45,9 +76,16 @@ public class Menu {
         }
     }
 
-    /**
-     * Runs the collection-specific sub-menu loop.
-     */
+    /*
+        Method: runCollectionMenu
+        
+        Purpose:
+        Runs the collection-specific sub-menu loop. This method is called from the
+        main menu and manages all actions related to the main card collection.
+        
+        Returns:
+        void. The method terminates when the user chooses to go back to the main menu.
+    */
     private void runCollectionMenu() {
         boolean inMenu = true;
         while(inMenu) {
@@ -63,9 +101,16 @@ public class Menu {
         }
     }
     
-    /**
-     * Runs the binder-specific sub-menu loop.
-     */
+    /*
+        Method: runBinderMenu
+        
+        Purpose:
+        Runs the binder-specific sub-menu loop. This method is called from the
+        main menu and manages all actions related to binders.
+        
+        Returns:
+        void. The method terminates when the user chooses to go back to the main menu.
+    */
     private void runBinderMenu() {
         boolean inMenu = true;
         while(inMenu) {
@@ -84,9 +129,16 @@ public class Menu {
         }
     }
     
-    /**
-     * Runs the deck-specific sub-menu loop.
-     */
+    /*
+        Method: runDeckMenu
+        
+        Purpose:
+        Runs the deck-specific sub-menu loop. This method is called from the
+        main menu and manages all actions related to decks.
+        
+        Returns:
+        void. The method terminates when the user chooses to go back to the main menu.
+    */
     private void runDeckMenu() {
         boolean inMenu = true;
         while(inMenu) {

@@ -12,15 +12,63 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Scanner;
 
-/**
- * Contains handler methods that execute the logic for specific UI menu options.
- */
+/*
+    Class: Handler
+    
+    Purpose:
+    Contains handler methods that execute the logic for specific UI menu options.
+    This class acts as the primary bridge between the user's menu selections
+    (managed by the Menu class) and the application's backend logic (managed by
+    the various Manager classes).
+*/
 public class Handler {
+    /*
+        Attribute: scanner
+        
+        Purpose:
+        The single, global Scanner instance used for all user input throughout
+        the application.
+    */
     private final Scanner scanner;
+
+    /*
+        Attribute: collectionManager
+        
+        Purpose:
+        A reference to the backend's CollectionManager to handle all operations
+        related to the main card collection.
+    */
     private final CollectionManager collectionManager;
+
+    /*
+        Attribute: binderManager
+        
+        Purpose:
+        A reference to the backend's BinderManager to handle all binder-related operations.
+    */
     private final BinderManager binderManager;
+
+    /*
+        Attribute: deckManager
+        
+        Purpose:
+        A reference to the backend's DeckManager to handle all deck-related operations.
+    */
     private final DeckManager deckManager;
 
+    /*
+        Constructor: Handler
+        
+        Purpose:
+        Initializes the Handler by injecting all the necessary backend managers and the
+        global scanner. This allows the Handler to communicate with both the user and
+        the application's core logic.
+        
+        @param s: The global Scanner instance.
+        @param cm: The CollectionManager instance.
+        @param bm: The BinderManager instance.
+        @param dm: The DeckManager instance.
+    */
     public Handler(Scanner s, CollectionManager cm, BinderManager bm, DeckManager dm) {
         this.scanner = s;
         this.collectionManager = cm;
@@ -28,7 +76,16 @@ public class Handler {
         this.deckManager = dm;
     }
     
-    // --- Collection Handlers ---
+    /*
+        Method: handleViewCollection
+        
+        Purpose:
+        Handles the workflow for viewing the details of a single card from the main
+        collection. It uses a helper to display the list and get a selection.
+        
+        Returns:
+        void. All output is printed directly to the console.
+    */
     public void handleViewCollection() {
         Card card = selectCardFromCollection("Select a card to view details");
         if (card != null) {
@@ -36,6 +93,16 @@ public class Handler {
         }
     }
 
+    /*
+        Method: handleAddNewCard
+        
+        Purpose:
+        Orchestrates the process of adding a new card type. It uses the Inputter
+        to gather and validate all necessary card details before calling the backend.
+        
+        Returns:
+        void.
+    */
     public void handleAddNewCard() {
         System.out.println(Display.getHeader("ADD NEW CARD"));
         String name = Inputter.getValidName(scanner, "Enter card name: ");
@@ -50,6 +117,15 @@ public class Handler {
         }
     }
 
+    /*
+        Method: handleUpdateCardCount
+        
+        Purpose:
+        Handles the workflow for increasing or decreasing the quantity of an existing card.
+        
+        Returns:
+        void.
+    */
     public void handleUpdateCardCount() {
         Card card = selectCardFromCollection("Select Card to Update Count");
         if (card == null) return;
@@ -66,7 +142,15 @@ public class Handler {
         }
     }
 
-    // --- Binder Handlers ---
+    /*
+        Method: handleViewBinders
+        
+        Purpose:
+        Handles the workflow for viewing the contents of a single, selected binder.
+        
+        Returns:
+        void.
+    */
     public void handleViewBinders() {
         Binder binder = selectBinder("Select a Binder to View");
         if (binder != null) {
@@ -81,12 +165,30 @@ public class Handler {
         }
     }
 
+    /*
+        Method: handleCreateBinder
+        
+        Purpose:
+        Handles the creation of a new binder.
+        
+        Returns:
+        void.
+    */
     public void handleCreateBinder() {
         System.out.println(Display.getHeader("CREATE BINDER"));
         String name = Inputter.getValidName(scanner, "Enter name for new binder: ");
         if (binderManager.createBinder(name)) System.out.println("Binder created successfully.");
     }
 
+    /*
+        Method: handleDeleteBinder
+        
+        Purpose:
+        Handles the deletion of a selected binder after user confirmation.
+        
+        Returns:
+        void.
+    */
     public void handleDeleteBinder() {
         Binder binder = selectBinder("Select a Binder to Delete");
         if (binder != null) {
@@ -95,6 +197,15 @@ public class Handler {
         }
     }
 
+    /*
+        Method: handleAddCardToBinder
+        
+        Purpose:
+        Handles moving a card from the main collection into a selected binder.
+        
+        Returns:
+        void.
+    */
     public void handleAddCardToBinder() {
         Binder binder = selectBinder("Select a Binder to add a card to");
         if (binder == null) return;
@@ -106,6 +217,15 @@ public class Handler {
         else System.out.println("Failed to add card. (Not found, no copies, or binder full)");
     }
     
+    /*
+        Method: handleRemoveCardFromBinder
+        
+        Purpose:
+        Handles removing a card from a selected binder and returning it to the collection.
+        
+        Returns:
+        void.
+    */
     public void handleRemoveCardFromBinder() {
         Binder binder = selectBinder("Select a Binder to remove a card from");
         if (binder == null) return;
@@ -117,6 +237,16 @@ public class Handler {
         else System.out.println("Failed to remove card.");
     }
     
+    /*
+        Method: handleTradeFromBinder
+        
+        Purpose:
+        Handles the complex workflow of trading a card from a binder for a new,
+        user-defined card, including value comparison and confirmation.
+        
+        Returns:
+        void.
+    */
     public void handleTradeFromBinder() {
         Binder binder = selectBinder("Select a Binder to trade from");
         if (binder == null || binder.getCards().isEmpty()) { System.out.println("Binder is empty or does not exist."); return; }
@@ -146,12 +276,30 @@ public class Handler {
         }
     }
 
-    // --- Deck Handlers ---
+    /*
+        Method: handleCreateDeck
+        
+        Purpose:
+        Handles the creation of a new deck.
+        
+        Returns:
+        void.
+    */
     public void handleCreateDeck() {
         System.out.println(Display.getHeader("CREATE DECK"));
         String name = Inputter.getValidName(scanner, "Enter name for new deck: ");
         if(deckManager.createDeck(name)) System.out.println("Deck created successfully.");
     }
+
+    /*
+        Method: handleViewDecks
+        
+        Purpose:
+        Handles the workflow for viewing the contents of a single, selected deck.
+        
+        Returns:
+        void.
+    */
     public void handleViewDecks() {
         Deck deck = selectDeck("Select a Deck to View");
         if (deck != null) {
@@ -163,6 +311,17 @@ public class Handler {
             System.out.println("=========================================");
         }
     }
+
+    /*
+        Method: handleAddCardToDeck
+        
+        Purpose:
+        Handles moving a card from the main collection into a selected deck,
+        respecting the deck's uniqueness and capacity rules.
+        
+        Returns:
+        void.
+    */
     public void handleAddCardToDeck() {
         Deck deck = selectDeck("Select a Deck to add a card to");
         if (deck == null) return;
@@ -172,6 +331,16 @@ public class Handler {
         if (result == 0) System.out.println("Card added.");
         else System.out.println("Failed to add card. (Not found, no copies, deck full, or duplicate)");
     }
+
+    /*
+        Method: handleRemoveCardFromDeck
+        
+        Purpose:
+        Handles removing a card from a selected deck and returning it to the collection.
+        
+        Returns:
+        void.
+    */
     public void handleRemoveCardFromDeck() {
         Deck deck = selectDeck("Select a Deck to remove a card from");
         if (deck == null) return;
@@ -180,6 +349,16 @@ public class Handler {
         int originalIndex = findCardIndexInList(deck.getCards(), card.getName());
         if (deckManager.removeCardFromDeck(originalIndex, deck.getName())) System.out.println("Card removed and returned to collection.");
     }
+
+    /*
+        Method: handleDeleteDeck
+        
+        Purpose:
+        Handles the deletion of a selected deck after user confirmation.
+        
+        Returns:
+        void.
+    */
     public void handleDeleteDeck() {
         Deck deck = selectDeck("Select a Deck to Delete");
         if (deck != null) {
@@ -188,7 +367,18 @@ public class Handler {
         }
     }
 
-    // --- Private Selection Helpers ---
+    /*
+        Method: selectCardFromCollection
+        
+        Purpose:
+        A private helper method to orchestrate the selection of a card specifically
+        from the main collection.
+        
+        Returns:
+        The selected Card object, or null if the user cancels or none are available.
+        
+        @param prompt: The title to display for the selection menu.
+    */
     private Card selectCardFromCollection(String prompt) {
         ArrayList<Card> cardTypes = collectionManager.getCardTypes();
         if (cardTypes.isEmpty()) { System.out.println("Collection is empty. Nothing to select."); return null; }
@@ -205,6 +395,20 @@ public class Handler {
         if (choice > 0 && choice <= cardTypes.size()) return cardTypes.get(choice - 1);
         return null;
     }
+
+    /*
+        Method: selectCardFromList
+        
+        Purpose:
+        A generic private helper to select a card from any provided list of cards,
+        such as the contents of a binder or deck.
+        
+        Returns:
+        The selected Card object, or null if the user cancels or the list is empty.
+        
+        @param list: The list of Card objects to display for selection.
+        @param prompt: The title to display for the selection menu.
+    */
     private Card selectCardFromList(ArrayList<Card> list, String prompt) {
         if (list.isEmpty()) { System.out.println("There are no cards to select."); return null; }
         list.sort(Comparator.comparing(Card::getName));
@@ -216,32 +420,71 @@ public class Handler {
         if (choice > 0 && choice <= list.size()) return list.get(choice - 1);
         return null;
     }
+
+    /*
+        Method: selectBinder
+        
+        Purpose:
+        A private helper to display all binders and handle the user's selection.
+        
+        Returns:
+        The selected Binder object, or null if the user cancels or none exist.
+        
+        @param prompt: The title to display for the selection menu.
+    */
     private Binder selectBinder(String prompt) {
         ArrayList<Binder> binders = binderManager.getBinders();
         if (binders.isEmpty()) { System.out.println("No binders exist."); return null; }
         ArrayList<String> names = new ArrayList<>();
+        binders.sort(Comparator.comparing(Binder::getName));
         for (Binder b : binders) names.add(b.getName() + " ("+b.getCardCount()+"/"+Binder.MAX_CAPACITY+")");
         System.out.println(Display.getList(names, prompt));
         int choice = Inputter.getIntInput(scanner, "Select a binder: ");
         if (choice > 0 && choice <= binders.size()) {
-            binders.sort(Comparator.comparing(Binder::getName));
             return binders.get(choice-1);
         }
         return null;
     }
+
+    /*
+        Method: selectDeck
+        
+        Purpose:
+        A private helper to display all decks and handle the user's selection.
+        
+        Returns:
+        The selected Deck object, or null if the user cancels or none exist.
+        
+        @param prompt: The title to display for the selection menu.
+    */
     private Deck selectDeck(String prompt) {
         ArrayList<Deck> decks = deckManager.getDecks();
         if (decks.isEmpty()) { System.out.println("No decks exist."); return null; }
         ArrayList<String> names = new ArrayList<>();
+        decks.sort(Comparator.comparing(Deck::getName));
         for (Deck d : decks) names.add(d.getName() + " ("+d.getCardCount()+"/"+Deck.MAX_CAPACITY+")");
         System.out.println(Display.getList(names, prompt));
         int choice = Inputter.getIntInput(scanner, "Select a deck: ");
         if (choice > 0 && choice <= decks.size()) {
-            decks.sort(Comparator.comparing(Deck::getName));
             return decks.get(choice-1);
         }
         return null;
     }
+
+    /*
+        Method: findCardIndexInList
+        
+        Purpose:
+        A private helper to find the original index of a card in an unsorted list
+        after it has been selected from a sorted display. This is necessary because
+        the display sorts the list for readability.
+        
+        Returns:
+        The integer index of the card in the original list, or -1 if not found.
+        
+        @param list: The original, unsorted list of cards.
+        @param name: The name of the card to find.
+    */
     private int findCardIndexInList(ArrayList<Card> list, String name) {
         for (int i=0; i < list.size(); i++) if(list.get(i).getName().equalsIgnoreCase(name)) return i;
         return -1;

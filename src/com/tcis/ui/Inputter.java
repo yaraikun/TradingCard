@@ -4,23 +4,37 @@ import com.tcis.models.card.Rarity;
 import com.tcis.models.card.Variant;
 import java.util.Scanner;
 
-/**
- * A utility class that combines getting raw input and validating it in a loop.
- * This class provides a streamlined and robust experience for gathering user data
- * by continuously prompting until the input meets the rules defined in the Validator.
- */
+/*
+    Class: Inputter
+    
+    Purpose:
+    A utility class that combines getting raw input and validating it in a loop.
+    This class provides a streamlined and robust experience for gathering user data
+    by continuously prompting until the input meets the rules defined in the Validator.
+*/
 public final class Inputter {
-    /**
-     * Private constructor to prevent instantiation of this utility class.
-     */
+    /*
+        Constructor: Inputter
+        
+        Purpose:
+        A private constructor to prevent instantiation of this utility class, as all
+        its methods are static.
+    */
     private Inputter() {}
 
-    /**
-     * Prompts the user for and returns an integer, handling non-numeric input.
-     * @param scanner The Scanner instance to use.
-     * @param prompt The message to display to the user.
-     * @return The validated integer.
-     */
+    /*
+        Method: getIntInput
+        
+        Purpose:
+        Prompts the user for and returns an integer. It handles non-numeric input by
+        re-prompting the user until a valid integer is entered.
+        
+        Returns:
+        A validated integer provided by the user.
+        
+        @param scanner: The Scanner instance to use for reading user input.
+        @param prompt: The message to display to the user before they enter input.
+    */
     public static int getIntInput(Scanner scanner, String prompt) {
         System.out.print(prompt);
         while (true) {
@@ -32,23 +46,36 @@ public final class Inputter {
         }
     }
     
-    /**
-     * Gets a raw string input from the user.
-     * @param scanner The Scanner instance to use.
-     * @param prompt The message to display to the user.
-     * @return The raw string entered by the user.
-     */
+    /*
+        Method: getStringInput
+        
+        Purpose:
+        Gets a raw string input from the user without any validation.
+        
+        Returns:
+        The raw string entered by the user.
+        
+        @param scanner: The Scanner instance to use for reading user input.
+        @param prompt: The message to display to the user.
+    */
     public static String getStringInput(Scanner scanner, String prompt) {
         System.out.print(prompt);
         return scanner.nextLine();
     }
 
-    /**
-     * Prompts the user for and returns a non-blank string.
-     * @param scanner The Scanner instance to use.
-     * @param prompt The message to display to the user.
-     * @return A valid, non-blank string.
-     */
+    /*
+        Method: getValidName
+        
+        Purpose:
+        Prompts the user for and returns a non-blank string, suitable for names of
+        cards, binders, or decks.
+        
+        Returns:
+        A valid, non-blank, trimmed string.
+        
+        @param scanner: The Scanner instance to use.
+        @param prompt: The message to display to the user.
+    */
     public static String getValidName(Scanner scanner, String prompt) {
         String input;
         do {
@@ -60,11 +87,18 @@ public final class Inputter {
         return input.trim();
     }
 
-    /**
-     * Prompts the user for and returns a valid Rarity enum.
-     * @param scanner The Scanner instance to use.
-     * @return A valid Rarity constant.
-     */
+    /*
+        Method: getValidRarity
+        
+        Purpose:
+        Prompts the user to select a Rarity from a numbered list and returns the
+        corresponding enum constant.
+        
+        Returns:
+        A valid Rarity constant chosen by the user.
+        
+        @param scanner: The Scanner instance to use.
+    */
     public static Rarity getValidRarity(Scanner scanner) {
         Rarity rarity;
         do {
@@ -75,18 +109,26 @@ public final class Inputter {
             int rarityInt = getIntInput(scanner, "Choose an option: ");
             rarity = Rarity.fromInt(rarityInt);
             if (rarity == null) {
-                System.out.println("Invalid rarity. Please choose from the provided options.");
+                System.out.println("Invalid selection. Please try again.");
             }
         } while (rarity == null);
         return rarity;
     }
 
-    /**
-     * Prompts the user for and returns a valid Variant enum, if applicable for the given rarity.
-     * @param scanner The Scanner instance to use.
-     * @param rarity The rarity of the card, which determines if a variant is needed.
-     * @return A valid Variant constant.
-     */
+    /*
+        Method: getValidVariant
+        
+        Purpose:
+        Prompts the user to select a Variant from a numbered list, but only if the
+        card's rarity allows for variants (Rare or Legendary). Otherwise, it defaults
+        to NORMAL.
+        
+        Returns:
+        A valid Variant constant.
+        
+        @param scanner: The Scanner instance to use.
+        @param rarity: The rarity of the card, which determines if a variant is needed.
+    */
     public static Variant getValidVariant(Scanner scanner, Rarity rarity) {
         if (rarity != Rarity.RARE && rarity != Rarity.LEGENDARY) {
             return Variant.NORMAL;
@@ -100,18 +142,25 @@ public final class Inputter {
             int variantInt = getIntInput(scanner, "Choose an option: ");
             variant = Variant.fromInt(variantInt);
             if (variant == null) {
-                System.out.println("Invalid variant. Please choose from the provided options.");
+                System.out.println("Invalid selection. Please try again.");
             }
         } while (variant == null);
         return variant;
     }
     
-    /**
-     * Prompts the user for and returns a positive double value.
-     * @param scanner The Scanner instance to use.
-     * @param prompt The message to display to the user.
-     * @return A valid, non-negative double.
-     */
+    /*
+        Method: getValidPositiveDouble
+        
+        Purpose:
+        Prompts the user for and returns a positive double value, handling both
+        format errors and negative number errors.
+        
+        Returns:
+        A valid, non-negative double.
+        
+        @param scanner: The Scanner instance to use.
+        @param prompt: The message to display to the user.
+    */
     public static double getValidPositiveDouble(Scanner scanner, String prompt) {
         double value;
         do {
@@ -129,12 +178,18 @@ public final class Inputter {
         return value;
     }
 
-    /**
-     * Prompts the user for and returns a strictly positive integer.
-     * @param scanner The Scanner instance to use.
-     * @param prompt The message to display to the user.
-     * @return A valid, strictly positive integer.
-     */
+    /*
+        Method: getValidPositiveInt
+        
+        Purpose:
+        Prompts the user for and returns a strictly positive integer (> 0).
+        
+        Returns:
+        A valid, strictly positive integer.
+        
+        @param scanner: The Scanner instance to use.
+        @param prompt: The message to display to the user.
+    */
     public static int getValidPositiveInt(Scanner scanner, String prompt) {
         int value;
         do {
