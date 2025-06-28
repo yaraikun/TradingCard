@@ -11,15 +11,15 @@ import java.util.ArrayList;
  */
 public class BinderManager {
     private final ArrayList<Binder> binders;
-    private final Collection collection;
+    private final CollectionManager collectionManager;
 
     /**
      * Constructs a new BinderManager.
-     * @param collection The central Collection object that this manager will interact with.
+     * @param collectionManager The central CollectionManager that this manager will interact with.
      */
-    public BinderManager(Collection collection) {
+    public BinderManager(CollectionManager collectionManager) {
         this.binders = new ArrayList<>();
-        this.collection = collection;
+        this.collectionManager = collectionManager;
     }
 
     /**
@@ -42,12 +42,19 @@ public class BinderManager {
      * Fails if a binder with the same name already exists.
      * @param name The name for the new binder.
      * @return true if the binder was created successfully, false otherwise.
-     * @throws IllegalArgumentException if the name is invalid (handled by Binder constructor).
      */
     public boolean createBinder(String name) {
-        if (findBinder(name) != null) return false;
-        binders.add(new Binder(name));
-        return true;
+        if (findBinder(name) != null) {
+            System.out.println("Error: A binder with this name already exists.");
+            return false;
+        }
+        try {
+            binders.add(new Binder(name));
+            return true;
+        } catch (IllegalArgumentException e) {
+            System.out.println("Error creating binder: " + e.getMessage());
+            return false;
+        }
     }
     
     /**
@@ -57,14 +64,16 @@ public class BinderManager {
      */
     public boolean deleteBinder(String name) {
         Binder binderToDelete = findBinder(name);
-        if (binderToDelete == null) return false;
+        if (binderToDelete == null) {
+            System.out.println("Error: Binder not found.");
+            return false;
+        }
 
         for (Card card : binderToDelete.getCards()) {
-            collection.increaseCount(card.getName(), 1);
+            collectionManager.increaseCount(card.getName(), 1);
         }
         
-        binders.remove(binderToDelete);
-        return true;
+        return binders.remove(binderToDelete);
     }
 
     /**
@@ -75,13 +84,13 @@ public class BinderManager {
      */
     public int addCardToBinder(String cardName, String binderName) {
         Binder binder = findBinder(binderName);
-        Card card = collection.findCard(cardName);
+        Card card = collectionManager.findCard(cardName);
 
         if (binder == null || card == null) return 1;
-        if (!collection.isCardAvailable(cardName)) return 2;
+        if (!collectionManager.isCardAvailable(cardName)) return 2;
         if (binder.isFull()) return 3;
 
-        collection.decreaseCount(cardName, 1);
+        collectionManager.decreaseCount(cardName, 1);
         binder.addCard(card);
         return 0;
     }
@@ -98,7 +107,7 @@ public class BinderManager {
 
         Card removedCard = binder.removeCard(cardIndex);
         if (removedCard != null) {
-            collection.increaseCount(removedCard.getName(), 1);
+            collectionManager.increaseCount(removedCard.getName(), 1);
             return true;
         }
         return false;
@@ -109,7 +118,7 @@ public class BinderManager {
      * and the incoming card is added to the binder.
      * @param binderName The name of the binder where the trade occurs.
      * @param outgoingCardIndex The index of the card being given up.
-     * @param incomingCard The new Card object being received.
+     * @param incomingCard The new Card object being received. Must be a valid, pre-constructed card.
      * @return true if the trade was successful, false otherwise.
      */
     public boolean performTrade(String binderName, int outgoingCardIndex, Card incomingCard) {
@@ -120,10 +129,11 @@ public class BinderManager {
         if (outgoingCard == null) return false;
 
         // If the incoming card is a new type, add it to the master list first.
-        if (collection.findCard(incomingCard.getName()) == null) {
-            collection.addCardType(incomingCard);
+        if (collectionManager.findCard(incomingCard.getName()) == null) {
+            // Use the full add method which handles exceptions internally
+            collectionManager.addNewCard(incomingCard.getName(), incomingCard.getBaseValue(), incomingCard.getRarity(), incomingCard.getVariant());
             // Immediately decrease its count, as it's going into the binder, not the "available" pool.
-            collection.decreaseCount(incomingCard.getName(), 1);
+            collectionManager.decreaseCount(incomingCard.getName(), 1);
         }
         
         binder.addCard(incomingCard);

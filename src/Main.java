@@ -1,19 +1,16 @@
-import com.tcis.backend.InventorySystem;
-import com.tcis.ui.DisplaySystem;
-import com.tcis.ui.MainMenu;
-import java.util.Scanner;
+import com.tcis.InventorySystem;
 
+/**
+ * The main entry point for the Trading Card Inventory System.
+ * Its sole responsibility is to create and run the main InventorySystem.
+ */
 public class Main {
+    /**
+     * The main method that launches the application.
+     * @param args Command line arguments (not used).
+     */
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        InventorySystem inventorySystem = new InventorySystem();
-        DisplaySystem displaySystem = new DisplaySystem();
-        MainMenu mainMenu = new MainMenu(inventorySystem, displaySystem, scanner);
-
-        System.out.println("Welcome to the Trading Card Inventory System!");
-        mainMenu.run();
-
-        System.out.println("Thank you for using the TCIS. Goodbye!");
-        scanner.close();
+        InventorySystem tcis = new InventorySystem();
+        tcis.run();
     }
 }

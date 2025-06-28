@@ -11,15 +11,15 @@ import java.util.ArrayList;
  */
 public class DeckManager {
     private final ArrayList<Deck> decks;
-    private final Collection collection;
+    private final CollectionManager collectionManager;
 
     /**
      * Constructs a new DeckManager.
-     * @param collection The central Collection object that this manager will interact with.
+     * @param collectionManager The central CollectionManager that this manager will interact with.
      */
-    public DeckManager(Collection collection) {
+    public DeckManager(CollectionManager collectionManager) {
         this.decks = new ArrayList<>();
-        this.collection = collection;
+        this.collectionManager = collectionManager;
     }
 
     /**
@@ -42,12 +42,19 @@ public class DeckManager {
      * Fails if a deck with the same name already exists.
      * @param name The name for the new deck.
      * @return true if the deck was created successfully, false otherwise.
-     * @throws IllegalArgumentException if the name is invalid (handled by Deck constructor).
      */
     public boolean createDeck(String name) {
-        if (findDeck(name) != null) return false;
-        decks.add(new Deck(name));
-        return true;
+        if (findDeck(name) != null) {
+            System.out.println("Error: A deck with this name already exists.");
+            return false;
+        }
+        try {
+            decks.add(new Deck(name));
+            return true;
+        } catch (IllegalArgumentException e) {
+            System.out.println("Error creating deck: " + e.getMessage());
+            return false;
+        }
     }
     
     /**
@@ -57,14 +64,16 @@ public class DeckManager {
      */
     public boolean deleteDeck(String name) {
         Deck deckToDelete = findDeck(name);
-        if (deckToDelete == null) return false;
-        
-        for (Card card : deckToDelete.getCards()) {
-            collection.increaseCount(card.getName(), 1);
+        if (deckToDelete == null) {
+            System.out.println("Error: Deck not found.");
+            return false;
         }
         
-        decks.remove(deckToDelete);
-        return true;
+        for (Card card : deckToDelete.getCards()) {
+            collectionManager.increaseCount(card.getName(), 1);
+        }
+        
+        return decks.remove(deckToDelete);
     }
     
     /**
@@ -75,14 +84,14 @@ public class DeckManager {
      */
     public int addCardToDeck(String cardName, String deckName) {
         Deck deck = findDeck(deckName);
-        Card card = collection.findCard(cardName);
+        Card card = collectionManager.findCard(cardName);
 
         if (deck == null || card == null) return 1;
-        if (!collection.isCardAvailable(cardName)) return 2;
+        if (!collectionManager.isCardAvailable(cardName)) return 2;
         if (deck.isFull()) return 3;
         if (deck.containsCard(cardName)) return 4;
 
-        collection.decreaseCount(cardName, 1);
+        collectionManager.decreaseCount(cardName, 1);
         deck.addCard(card);
         return 0;
     }
@@ -99,7 +108,7 @@ public class DeckManager {
 
         Card removedCard = deck.removeCard(cardIndex);
         if (removedCard != null) {
-            collection.increaseCount(removedCard.getName(), 1);
+            collectionManager.increaseCount(removedCard.getName(), 1);
             return true;
         }
         return false;
