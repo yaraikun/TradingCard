@@ -4,17 +4,27 @@ import com.tcis.models.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+/**
+ * Acts as a Facade for the entire backend system.
+ * The UI layer interacts exclusively with this class, which then delegates
+ * requests to the appropriate manager (Collection, BinderManager, DeckManager).
+ * This decouples the UI from the backend's internal implementation.
+ */
 public class InventorySystem {
     private final Collection collection;
     private final BinderManager binderManager;
     private final DeckManager deckManager;
 
+    /**
+     * Constructs the InventorySystem, initializing all backend components.
+     */
     public InventorySystem() {
         this.collection = new Collection();
         this.binderManager = new BinderManager(this.collection);
         this.deckManager = new DeckManager(this.collection);
     }
     
+    // --- Collection Methods ---
     public boolean addCardToCollection(String name, double baseValue, CardRarity rarity, CardVariant variant) {
         try {
             Card card = new Card(name, baseValue, rarity, variant);
@@ -30,6 +40,7 @@ public class InventorySystem {
     public ArrayList<Card> getCardTypes() { return collection.getCardTypes(); }
     public HashMap<String, Integer> getCardCounts() { return collection.getCardCounts(); }
 
+    // --- Binder Methods ---
     public boolean createBinder(String name) {
         try { return binderManager.createBinder(name); } catch (IllegalArgumentException e) { System.out.println("Error: " + e.getMessage()); return false; }
     }
@@ -40,6 +51,7 @@ public class InventorySystem {
     public ArrayList<Binder> getBinders() { return binderManager.getBinders(); }
     public Binder findBinder(String name) { return binderManager.findBinder(name); }
 
+    // --- Deck Methods ---
     public boolean createDeck(String name) {
         try { return deckManager.createDeck(name); } catch (IllegalArgumentException e) { System.out.println("Error: " + e.getMessage()); return false; }
     }
