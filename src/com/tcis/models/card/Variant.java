@@ -13,10 +13,12 @@ public enum Variant {
     private final double multiplier;
 
     /*
-    Method: Variant Constructor
-    Purpose: Creates an instance of variant based on specific constant given
-    @param displayName: Name of variant
-    @param multiplier: The specific multiplier associated with specific variant
+        Method: Variant Constructor
+
+        Purpose: Creates an instance of variant based on specific constant given
+
+        @param displayName: Name of variant
+        @param multiplier: The specific multiplier associated with specific variant
     */
     Variant(String displayName, double multiplier) {
         this.displayName = displayName;
@@ -25,7 +27,9 @@ public enum Variant {
 
     /*
         Method: getDisplayName
+
         Purpose: A getter for the display name of the instance's variant when called
+
         Returns: Display name of instance's rarity
     */
     public String getDisplayName() {
@@ -34,10 +38,23 @@ public enum Variant {
 
     /*
         Method: getMultiplier
+
         Purpose: A getter for the multiplier of the instance's variant when called
+
         Returns: Multiplier of the instance's variant
     */
     public double getMultiplier() {
         return this.multiplier;
+    }
+
+    /*
+        Method: getMultiplier
+
+        Purpose: A getter for the multiplier of the instance's variant when called
+
+        Returns: Multiplier of the instance's variant
+    */
+    public static Variant fromInt(int choice) {
+        return Variant.values()[choice - 1];
     }
 }
