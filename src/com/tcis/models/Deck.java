@@ -45,9 +45,9 @@ public class Deck {
         @throws IllegalArgumentException: if the provided name is invalid.
     */
     public Deck(String name) {
-        if (name == null || name.trim().isEmpty()) {
+        if (name == null || name.trim().isEmpty())
             throw new IllegalArgumentException("Deck name cannot be null or blank.");
-        }
+
         this.name = name.trim();
         this.cards = new ArrayList<>();
     }
@@ -111,11 +111,10 @@ public class Deck {
         @param cardName: The name of the card to check for uniqueness.
     */
     public boolean containsCard(String cardName) {
-        for (Card card : cards) {
-            if (card.getName().equalsIgnoreCase(cardName)) {
+        for (Card card : cards)
+            if (card.getName().equalsIgnoreCase(cardName))
                 return true;
-            }
-        }
+
         return false;
     }
 
@@ -149,9 +148,8 @@ public class Deck {
         @param index: The zero-based index of the card to remove.
     */
     public Card removeCard(int index) {
-        if (index >= 0 && index < cards.size()) {
+        if (index >= 0 && index < cards.size())
             return cards.remove(index);
-        }
         return null;
     }
 }
