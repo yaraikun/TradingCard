@@ -25,17 +25,19 @@ public enum Variant {
 
     /*
         Method: getDisplayName
-        Purpose: Returns the display name of the instance's variant when called
+        Purpose: A getter for the display name of the instance's variant when called
+        Returns: Display name of instance's rarity
     */
     public String getDisplayName() {
-        return displayName;
+        return this.displayName;
     }
 
     /*
         Method: getMultiplier
-        Purpose: Returns the multiplier of the instance's variant when called
+        Purpose: A getter for the multiplier of the instance's variant when called
+        Returns: Multiplier of the instance's variant
     */
     public double getMultiplier() {
-        return multiplier;
+        return this.multiplier;
     }
 }

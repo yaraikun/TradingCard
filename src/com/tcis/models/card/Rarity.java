@@ -22,10 +22,11 @@ public enum Rarity {
 
     /*
         Method: getDisplayName
-        Purpose: Returns the display name of the instance's rarity when called
+        Purpose: A getter for the display name of the instance's rarity when called
+        Returns: Display name of instance's rarity
     */
     public String getDisplayName() {
-        return displayName;
+        return this.displayName;
     }
 
 }
