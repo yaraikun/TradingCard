@@ -14,8 +14,6 @@ import java.util.Scanner;
 
 /**
  * Contains handler methods that execute the logic for specific UI menu options.
- * This class connects the user's choice to a backend operation, acting as a bridge
- * between the Menu and the backend managers.
  */
 public class Handler {
     private final Scanner scanner;
@@ -23,13 +21,6 @@ public class Handler {
     private final BinderManager binderManager;
     private final DeckManager deckManager;
 
-    /**
-     * Constructs the Handler, providing it with access to the backend managers.
-     * @param s The global Scanner instance.
-     * @param cm The CollectionManager instance.
-     * @param bm The BinderManager instance.
-     * @param dm The DeckManager instance.
-     */
     public Handler(Scanner s, CollectionManager cm, BinderManager bm, DeckManager dm) {
         this.scanner = s;
         this.collectionManager = cm;
@@ -38,7 +29,6 @@ public class Handler {
     }
     
     // --- Collection Handlers ---
-
     public void handleViewCollection() {
         Card card = selectCardFromCollection("Select a card to view details");
         if (card != null) {
@@ -47,7 +37,7 @@ public class Handler {
     }
 
     public void handleAddNewCard() {
-        System.out.println("\n--- Add a New Card Type ---");
+        System.out.println(Display.getHeader("ADD NEW CARD"));
         String name = Inputter.getValidName(scanner, "Enter card name: ");
         if (collectionManager.findCard(name) != null) { System.out.println("A card with this name already exists."); return; }
         
@@ -77,36 +67,31 @@ public class Handler {
     }
 
     // --- Binder Handlers ---
-
     public void handleViewBinders() {
         Binder binder = selectBinder("Select a Binder to View");
         if (binder != null) {
             ArrayList<Card> cards = binder.getCards();
             if (cards.isEmpty()) { System.out.println("This binder is empty."); return; }
             cards.sort(Comparator.comparing(Card::getName));
-            System.out.printf("\n--- Cards in %s ---\n", binder.getName());
-            for (Card c : cards) { System.out.println("- " + c.getName()); }
+            System.out.println(Display.getHeader("CARDS IN " + binder.getName().toUpperCase()));
+            for (Card c : cards) {
+                System.out.println("- " + c.getName());
+            }
+            System.out.println("=========================================");
         }
     }
 
     public void handleCreateBinder() {
+        System.out.println(Display.getHeader("CREATE BINDER"));
         String name = Inputter.getValidName(scanner, "Enter name for new binder: ");
-        if (!binderManager.createBinder(name)) {
-             // Error message is printed by the manager
-        } else {
-            System.out.println("Binder created successfully.");
-        }
+        if (binderManager.createBinder(name)) System.out.println("Binder created successfully.");
     }
 
     public void handleDeleteBinder() {
         Binder binder = selectBinder("Select a Binder to Delete");
         if (binder != null) {
             String confirm = Inputter.getStringInput(scanner, "Delete '"+binder.getName()+"'? All cards will be returned. (yes/no): ");
-            if (confirm.equalsIgnoreCase("yes") && binderManager.deleteBinder(binder.getName())) {
-                System.out.println("Binder deleted.");
-            } else {
-                System.out.println("Deletion canceled or failed.");
-            }
+            if (confirm.equalsIgnoreCase("yes") && binderManager.deleteBinder(binder.getName())) System.out.println("Binder deleted.");
         }
     }
 
@@ -136,10 +121,10 @@ public class Handler {
         Binder binder = selectBinder("Select a Binder to trade from");
         if (binder == null || binder.getCards().isEmpty()) { System.out.println("Binder is empty or does not exist."); return; }
         
-        Card outgoingCard = selectCardFromList(binder.getCards(), "Select a card to trade away");
+        Card outgoingCard = selectCardFromList(binder.getCards(), "Select a card to TRADE AWAY");
         if (outgoingCard == null) return;
 
-        System.out.println("--- Enter details for INCOMING card ---");
+        System.out.println(Display.getHeader("INCOMING CARD DETAILS"));
         String inName = Inputter.getValidName(scanner, "Enter name: ");
         Rarity inRarity = Inputter.getValidRarity(scanner);
         Variant inVariant = Inputter.getValidVariant(scanner, inRarity);
@@ -150,8 +135,8 @@ public class Handler {
             double diff = Math.abs(outgoingCard.getCalculatedValue() - incomingCard.getCalculatedValue());
             System.out.printf("Value difference is $%.2f.\n", diff);
             if (diff >= 1.0) {
-                System.out.print("This may be an unfair trade. Proceed? (yes/no): ");
-                if (!scanner.nextLine().trim().equalsIgnoreCase("yes")) { System.out.println("Trade canceled."); return; }
+                String confirm = Inputter.getStringInput(scanner, "This may be an unfair trade. Proceed? (yes/no): ");
+                if (!confirm.equalsIgnoreCase("yes")) { System.out.println("Trade canceled."); return; }
             }
             int outgoingIndex = findCardIndexInList(binder.getCards(), outgoingCard.getName());
             if (binderManager.performTrade(binder.getName(), outgoingIndex, incomingCard)) System.out.println("Trade successful!");
@@ -163,8 +148,9 @@ public class Handler {
 
     // --- Deck Handlers ---
     public void handleCreateDeck() {
+        System.out.println(Display.getHeader("CREATE DECK"));
         String name = Inputter.getValidName(scanner, "Enter name for new deck: ");
-        if(deckManager.createDeck(name)) System.out.println("Deck created.");
+        if(deckManager.createDeck(name)) System.out.println("Deck created successfully.");
     }
     public void handleViewDecks() {
         Deck deck = selectDeck("Select a Deck to View");
@@ -172,8 +158,9 @@ public class Handler {
             ArrayList<Card> cards = deck.getCards();
             if (cards.isEmpty()) { System.out.println("This deck is empty."); return; }
             cards.sort(Comparator.comparing(Card::getName));
-            System.out.printf("\n--- Cards in %s ---\n", deck.getName());
+            System.out.println(Display.getHeader("CARDS IN " + deck.getName().toUpperCase()));
             for (Card c : cards) { System.out.println("- " + c.getName()); }
+            System.out.println("=========================================");
         }
     }
     public void handleAddCardToDeck() {
@@ -183,7 +170,7 @@ public class Handler {
         if (card == null) return;
         int result = deckManager.addCardToDeck(card.getName(), deck.getName());
         if (result == 0) System.out.println("Card added.");
-        else System.out.println("Failed to add card. (Not found, no copies, deck full, or duplicate card)");
+        else System.out.println("Failed to add card. (Not found, no copies, deck full, or duplicate)");
     }
     public void handleRemoveCardFromDeck() {
         Deck deck = selectDeck("Select a Deck to remove a card from");
@@ -203,15 +190,28 @@ public class Handler {
 
     // --- Private Selection Helpers ---
     private Card selectCardFromCollection(String prompt) {
-        ArrayList<Card> list = collectionManager.getCardTypes();
-        return selectCardFromList(list, prompt);
+        ArrayList<Card> cardTypes = collectionManager.getCardTypes();
+        if (cardTypes.isEmpty()) { System.out.println("Collection is empty. Nothing to select."); return null; }
+        
+        cardTypes.sort(Comparator.comparing(Card::getName));
+        System.out.println(Display.getHeader(prompt.toUpperCase()));
+        System.out.println(" (0) Back");
+        for (int i = 0; i < cardTypes.size(); i++) {
+            Card c = cardTypes.get(i);
+            System.out.printf(" (%d) %s (Count: %d)\n", i+1, c.getName(), collectionManager.getCardCount(c.getName()));
+        }
+        System.out.println("=========================================");
+        int choice = Inputter.getIntInput(scanner, "Select a card: ");
+        if (choice > 0 && choice <= cardTypes.size()) return cardTypes.get(choice - 1);
+        return null;
     }
     private Card selectCardFromList(ArrayList<Card> list, String prompt) {
         if (list.isEmpty()) { System.out.println("There are no cards to select."); return null; }
         list.sort(Comparator.comparing(Card::getName));
-        System.out.printf("\n--- %s ---\n", prompt);
+        System.out.println(Display.getHeader(prompt.toUpperCase()));
         System.out.println(" (0) Back");
         for (int i = 0; i < list.size(); i++) { System.out.printf(" (%d) %s\n", i + 1, list.get(i).getName()); }
+        System.out.println("=========================================");
         int choice = Inputter.getIntInput(scanner, "Select a card: ");
         if (choice > 0 && choice <= list.size()) return list.get(choice - 1);
         return null;
@@ -229,7 +229,7 @@ public class Handler {
         }
         return null;
     }
-     private Deck selectDeck(String prompt) {
+    private Deck selectDeck(String prompt) {
         ArrayList<Deck> decks = deckManager.getDecks();
         if (decks.isEmpty()) { System.out.println("No decks exist."); return null; }
         ArrayList<String> names = new ArrayList<>();
