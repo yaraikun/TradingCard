@@ -4,45 +4,60 @@ import com.tcis.models.Binder;
 import com.tcis.models.Card;
 import java.util.ArrayList;
 
-/**
- * Manages the lifecycle and contents of all Binder objects.
- * It handles the logic for creating, deleting, and modifying binders,
- * and orchestrates the movement of cards between binders and the main collection.
- */
+/*
+    Class Name: BinderManager
+
+    Purpose: Manages the lifecycle and contents of all Binder objects. It
+    handles the logic for creating, deleting, and modifying binders, and
+    orchestrates the movement of cards between binders and the main collection.
+*/
 public class BinderManager {
     private final ArrayList<Binder> binders;
     private final CollectionManager collectionManager;
 
-    /**
-     * Constructs a new BinderManager.
-     * @param collectionManager The central CollectionManager that this manager will interact with.
-     */
+    /*
+        Method: BinderManager
+
+        Purpose: Constructs a new BinderManager.
+
+        @param collectionManager The central CollectionManager that this
+        manager will interact with.
+    */
     public BinderManager(CollectionManager collectionManager) {
         this.binders = new ArrayList<>();
         this.collectionManager = collectionManager;
     }
 
-    /**
-     * Finds a binder by its name (case-insensitive).
-     * @param name The name of the binder to find.
-     * @return The Binder object if found, otherwise null.
-     */
+    /*
+        Method: findBinder
+
+        Purpose: Finds a binder by its name (case-insensitive).
+
+        Returns: The Binder object if found, otherwise null.
+
+        @param name: The name of the binder to find.
+    */
     public Binder findBinder(String name) {
-        if (name == null) return null;
-        for (Binder binder : binders) {
-            if (binder.getName().equalsIgnoreCase(name.trim())) {
+        if (name == null)
+            return null;
+
+        for (Binder binder : binders)
+            if (binder.getName().equalsIgnoreCase(name.trim()))
                 return binder;
-            }
-        }
+
         return null;
     }
 
-    /**
-     * Creates a new, empty binder with the given name.
-     * Fails if a binder with the same name already exists.
-     * @param name The name for the new binder.
-     * @return true if the binder was created successfully, false otherwise.
-     */
+    /*
+        Method: createBinder
+
+        Purpose: Creates a new, empty binder with the given name.
+        Fails if a binder with the same name already exists.
+
+        Returns: true if the binder was created successfully, false otherwise.
+
+        @param name: The name for the new binder.
+    */
     public boolean createBinder(String name) {
         if (findBinder(name) != null) {
             System.out.println("Error: A binder with this name already exists.");
@@ -57,11 +72,14 @@ public class BinderManager {
         }
     }
     
-    /**
-     * Deletes a binder and returns all its cards to the main collection.
-     * @param name The name of the binder to delete.
-     * @return true if the binder was found and deleted, false otherwise.
-     */
+    /*
+          Purpose: Deletes a binder and returns all its cards to the main
+          collection.
+    
+          Return: true if the binder was found and deleted, false otherwise.
+    
+          @param name: The name of the binder to delete.
+    */
     public boolean deleteBinder(String name) {
         Binder binderToDelete = findBinder(name);
         if (binderToDelete == null) {
@@ -76,12 +94,16 @@ public class BinderManager {
         return binders.remove(binderToDelete);
     }
 
-    /**
-     * Moves a card from the main collection to a specified binder.
-     * @param cardName The name of the card to move.
-     * @param binderName The name of the target binder.
-     * @return An integer status code: 0 for success, 1 for not found, 2 for no copies, 3 for binder full.
-     */
+    /*
+        Method: addCardToBinder
+
+        Purpose: Moves a card from the main collection to a specified binder.
+
+        Returns: 0 for success, 1 for not found, 2 for no copies, 3 for binder full.
+
+        @param cardName: The name of the card to move.
+        @param binderName: The name of the target binder.
+    */
     public int addCardToBinder(String cardName, String binderName) {
         Binder binder = findBinder(binderName);
         Card card = collectionManager.findCard(cardName);
@@ -95,12 +117,17 @@ public class BinderManager {
         return 0;
     }
 
-    /**
-     * Removes a card from a binder at a specific index and returns it to the main collection.
-     * @param cardIndex The index of the card to remove from the binder's list.
-     * @param binderName The name of the binder.
-     * @return true if the removal was successful, false otherwise.
-     */
+    /*
+        Method: removeCardFromBinder
+
+        Purpose: Removes a card from a binder at a specific index and returns
+        it to the main collection.
+
+        Returns: true if the removal was successful, false otherwise.
+
+        @param cardIndex: The index of the card to remove from the binder's list.
+        @param binderName: The name of the binder.
+    */
     public boolean removeCardFromBinder(int cardIndex, String binderName) {
         Binder binder = findBinder(binderName);
         if (binder == null) return false;
@@ -113,14 +140,19 @@ public class BinderManager {
         return false;
     }
 
-    /**
-     * Executes a 1-for-1 card trade. The outgoing card is removed permanently,
-     * and the incoming card is added to the binder.
-     * @param binderName The name of the binder where the trade occurs.
-     * @param outgoingCardIndex The index of the card being given up.
-     * @param incomingCard The new Card object being received. Must be a valid, pre-constructed card.
-     * @return true if the trade was successful, false otherwise.
-     */
+    /*
+        Method: performTrade
+
+        Purpose: Executes a 1-for-1 card trade. The outgoing card is removed =
+        permanently, and the incoming card is added to the binder.
+
+        @return true if the trade was successful, false otherwise.
+
+        @param binderName The name of the binder where the trade occurs.
+        @param outgoingCardIndex The index of the card being given up.
+        @param incomingCard The new Card object being received. Must be a
+                            valid, pre-constructed card.
+    */
     public boolean performTrade(String binderName, int outgoingCardIndex, Card incomingCard) {
         Binder binder = findBinder(binderName);
         if (binder == null || incomingCard == null) return false;
@@ -140,10 +172,13 @@ public class BinderManager {
         return true;
     }
 
-    /**
-     * Gets a defensive copy of the list of all binders.
-     * @return A new ArrayList containing all Binder objects.
-     */
+    /*
+        Method: getBinders
+
+        Purpose: Gets a defensive copy of the list of all binders.
+
+        Returns: A new ArrayList containing all Binder objects.
+    */
     public ArrayList<Binder> getBinders() {
         return new ArrayList<>(binders);
     }
