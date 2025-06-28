@@ -1,9 +1,8 @@
 package com.tcis.models.card;
 
-/**
- * Represents the fixed set of rarities a card can have.
- * Using an enum provides type safety and a clear, finite list of options.
- */
+/*
+This rarity enum represents the fixed set of rarities a card can have.
+*/
 public enum Rarity {
     COMMON("Common"),
     UNCOMMON("Uncommon"),
@@ -12,22 +11,21 @@ public enum Rarity {
 
     private final String displayName;
 
+    /*
+    Method: Rarity Constructor
+    Purpose: Creates an instance of rarity based on specific constant given
+    @param displayName: Name of rarity
+    */
     Rarity(String displayName) {
         this.displayName = displayName;
     }
 
+    /*
+        Method: getDisplayName
+        Purpose: Returns the display name of the instance's rarity when called
+    */
     public String getDisplayName() {
         return displayName;
     }
 
-    public static Rarity fromString(String text) {
-        if (text != null) {
-            for (Rarity r : Rarity.values()) {
-                if (text.trim().equalsIgnoreCase(r.displayName)) {
-                    return r;
-                }
-            }
-        }
-        return null;
-    }
 }
