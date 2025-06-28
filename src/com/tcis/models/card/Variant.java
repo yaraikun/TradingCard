@@ -48,13 +48,17 @@ public enum Variant {
     }
 
     /*
-        Method: getMultiplier
+        Method: fromInt
 
-        Purpose: A getter for the multiplier of the instance's variant when called
+        Purpose: A method to get a CardVariant from a 1-based integer index.
 
-        Returns: Multiplier of the instance's variant
+        Returns: Corresponding CardVariant.
     */
     public static Variant fromInt(int choice) {
-        return Variant.values()[choice - 1];
+        if (choice > 0 && choice <= Variant.values().length) {
+            return Variant.values()[choice - 1];
+        }
+
+        return null;
     }
 }

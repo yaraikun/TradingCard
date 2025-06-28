@@ -29,4 +29,18 @@ public enum Rarity {
         return this.displayName;
     }
 
+    /*
+        Method: fromInt
+
+        Purpose: A method to get a CardRarity from a 1-based integer index.
+
+        Returns: Corresponding CardRarity.
+    */
+    public static Rarity fromInt(int choice) {
+        if (choice > 0 && choice <= Rarity.values().length) {
+            return Rarity.values()[choice - 1];
+        }
+
+        return null;
+    }
 }

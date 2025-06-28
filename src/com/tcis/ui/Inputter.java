@@ -68,8 +68,12 @@ public final class Inputter {
     public static Rarity getValidRarity(Scanner scanner) {
         Rarity rarity;
         do {
-            String rarityStr = getStringInput(scanner, "Enter rarity (Common, Uncommon, Rare, Legendary): ");
-            rarity = Rarity.fromString(rarityStr);
+            System.out.println("Select a Rarity:");
+            for (Rarity r : Rarity.values()) {
+                System.out.printf(" (%d) %s\n", r.ordinal() + 1, r.getDisplayName());
+            }
+            int rarityInt = getIntInput(scanner, "Choose an option: ");
+            rarity = Rarity.fromInt(rarityInt);
             if (rarity == null) {
                 System.out.println("Invalid rarity. Please choose from the provided options.");
             }
@@ -89,8 +93,12 @@ public final class Inputter {
         }
         Variant variant;
         do {
-            String variantStr = getStringInput(scanner, "Enter variant (Normal, Extended-art, Full-art, Alt-art): ");
-            variant = Variant.fromString(variantStr);
+            System.out.println("Select a Variant:");
+            for (Variant v : Variant.values()) {
+                System.out.printf(" (%d) %s\n", v.ordinal() + 1, v.getDisplayName());
+            }
+            int variantInt = getIntInput(scanner, "Choose an option: ");
+            variant = Variant.fromInt(variantInt);
             if (variant == null) {
                 System.out.println("Invalid variant. Please choose from the provided options.");
             }
