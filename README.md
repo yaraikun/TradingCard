@@ -9,10 +9,9 @@
 Below are the deliverables and tasks associated with this project:
 
 * [x] UML Class Diagram
-* [ ] ZIP file of the implemented code (with Javadoc documentation)
-* [ ] Test Script
-* [ ] Demo Video
-* [ ] Declaration of Original Work
+* [x] ZIP file of the implemented code (with Javadoc documentation)
+* [x] Test Script
+* [x] Declaration of Original Work
 
 ---
 
@@ -21,7 +20,6 @@ Below are the deliverables and tasks associated with this project:
 ### 🔗 Useful Links
 
 * **UML Diagram (.drawio)**
-  [View UML Diagram](https://drive.google.com/file/d/1PQDP7lxttyp8r9dFN5vyvy4u-22X016f/view?usp=sharing)
 
 ---
 
