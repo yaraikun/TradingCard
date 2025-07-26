@@ -1,42 +1,46 @@
 package com.tcis.backend;
 
-import com.tcis.models.Binder;
-import com.tcis.models.Card;
+import com.tcis.models.binder.*;
+import com.tcis.models.card.Card;
 import java.util.ArrayList;
 
-/*
-    Class Name: BinderManager
-
-    Purpose: Manages the lifecycle and contents of all Binder objects. It
-    handles the logic for creating, deleting, and modifying binders, and
-    orchestrates the movement of cards between binders and the main collection.
-*/
+/**
+ * Manages the lifecycle and contents of all Binder objects.
+ * This class handles the logic for creating, deleting, and modifying different
+ * types of binders, and orchestrates the movement of cards between binders and
+ * the main collection based on the new MCO2 rules. It leverages polymorphism
+ * to handle different binder types seamlessly.
+ */
 public class BinderManager {
+    /**
+     * The list of all binders managed by the system. It holds the abstract
+     * Binder superclass to allow for polymorphic behavior among different
+     * binder types.
+     */
     private final ArrayList<Binder> binders;
+
+    /**
+     * A reference to the central CollectionManager, which is required for
+     * updating card counts when cards are moved or binders are deleted.
+     */
     private final CollectionManager collectionManager;
 
-    /*
-        Method: BinderManager
-
-        Purpose: Constructs a new BinderManager.
-
-        @param collectionManager The central CollectionManager that this
-        manager will interact with.
-    */
+    /**
+     * Constructs a new BinderManager.
+     * @param collectionManager The central CollectionManager that this manager
+     *                          will depend on for all card inventory
+     *                          operations.
+     */
     public BinderManager(CollectionManager collectionManager) {
         this.binders = new ArrayList<>();
         this.collectionManager = collectionManager;
     }
 
-    /*
-        Method: findBinder
-
-        Purpose: Finds a binder by its name (case-insensitive).
-
-        Returns: The Binder object if found, otherwise null.
-
-        @param name: The name of the binder to find.
-    */
+    /**
+     * Finds a binder by its name (case-insensitive).
+     * @param name The name of the binder to find.
+     * @return The Binder object if found, otherwise null.
+     */
     public Binder findBinder(String name) {
         if (name == null)
             return null;
@@ -48,23 +52,47 @@ public class BinderManager {
         return null;
     }
 
-    /*
-        Method: createBinder
-
-        Purpose: Creates a new, empty binder with the given name.
-        Fails if a binder with the same name already exists.
-
-        Returns: true if the binder was created successfully, false otherwise.
-
-        @param name: The name for the new binder.
-    */
-    public boolean createBinder(String name) {
+    /**
+     * Creates a new binder of a specific type.
+     * This method acts as a factory, instantiating the correct Binder subclass
+     * based on user input. Fails if a binder with the same name already
+     * exists.
+     * @param name The name for the new binder.
+     * @param type The string representing the type of binder to create
+     *             (e.g., "Pauper", "Collector").
+     * @return true if the binder was created successfully, false otherwise.
+     */
+    public boolean createBinder(String name, String type) {
         if (findBinder(name) != null) {
             System.out.println("Error: A binder with this name already exists.");
             return false;
         }
+
         try {
-            binders.add(new Binder(name));
+            Binder newBinder;
+
+            switch (type.toLowerCase().trim()) {
+                case "non-curated":
+                    newBinder = new NonCuratedBinder(name);
+                    break;
+                case "collector":
+                    newBinder = new CollectorBinder(name);
+                    break;
+                case "pauper":
+                    newBinder = new PauperBinder(name);
+                    break;
+                case "rares":
+                    newBinder = new RaresBinder(name);
+                    break;
+                case "luxury":
+                    newBinder = new LuxuryBinder(name);
+                    break;
+                default:
+                    System.out.println("Error: Unknown binder type '" + type + "'.");
+                    return false;
+            }
+
+            binders.add(newBinder);
             return true;
         } catch (IllegalArgumentException e) {
             System.out.println("Error creating binder: " + e.getMessage());
@@ -72,99 +100,133 @@ public class BinderManager {
         }
     }
     
-    /*
-          Purpose: Deletes a binder and returns all its cards to the main
-          collection.
-    
-          Return: true if the binder was found and deleted, false otherwise.
-    
-          @param name: The name of the binder to delete.
-    */
+    /**
+     * Deletes a binder and returns all its cards to the main collection.
+     * This action is for when a user simply wants to remove a binder, not sell it.
+     * @param name The name of the binder to delete.
+     * @return true if the binder was found and deleted, false otherwise.
+     */
     public boolean deleteBinder(String name) {
         Binder binderToDelete = findBinder(name);
+
         if (binderToDelete == null) {
             System.out.println("Error: Binder not found.");
             return false;
         }
 
-        for (Card card : binderToDelete.getCards()) {
+        for (Card card : binderToDelete.getCards())
             collectionManager.increaseCount(card.getName(), 1);
-        }
         
         return binders.remove(binderToDelete);
     }
 
-    /*
-        Method: addCardToBinder
+    /**
+     * Sells a binder if it is sellable. When sold, the binder and all cards
+     * within it are permanently removed from the system.
+     * @param name The name of the binder to sell.
+     * @return The calculated sale price of the binder if sold successfully.
+     *         Returns a value <= 0 on failure (e.g., binder not found or not
+     *         sellable), which the calling method should check for.
+     */
+    public double sellBinder(String name) {
+        Binder binderToSell = findBinder(name);
 
-        Purpose: Moves a card from the main collection to a specified binder.
+        if (binderToSell == null) {
+            System.out.println("Error: Binder not found.");
+            return 0.0;
+        }
 
-        Returns: 0 for success, 1 for not found, 2 for no copies, 3 for binder full.
+        if (!binderToSell.isSellable()) {
+            System.out.println("Error: This binder type ('" + binderToSell.getClass().getSimpleName() + "') cannot be sold.");
+            return 0.0;
+        }
 
-        @param cardName: The name of the card to move.
-        @param binderName: The name of the target binder.
-    */
+        double price = binderToSell.calculatePrice();
+        
+        binders.remove(binderToSell); 
+        return price;
+    }
+
+    /**
+     * Moves a card from the main collection to a specified binder, respecting
+     * the binder's specific rules.
+     * @param cardName The name of the card to move.
+     * @param binderName The name of the target binder.
+     * @return An integer status code: 0 for success, 1 for card/binder not
+     *         found, 2 for no copies available, 3 for binder is full, 4 for
+     *         card violates binder's rules.
+     */
     public int addCardToBinder(String cardName, String binderName) {
         Binder binder = findBinder(binderName);
         Card card = collectionManager.findCard(cardName);
 
-        if (binder == null || card == null) return 1;
-        if (!collectionManager.isCardAvailable(cardName)) return 2;
-        if (binder.isFull()) return 3;
+        if (binder == null || card == null)
+            return 1;
 
-        collectionManager.decreaseCount(cardName, 1);
-        binder.addCard(card);
-        return 0;
+        if (!collectionManager.isCardAvailable(cardName))
+            return 2;
+        
+        if (!binder.addCard(card)) {
+            if (binder.isFull()) {
+                return 3;
+            } else {
+                return 4;
+            }
+        }
+
+        collectionManager.decreaseCount(card.getName(), 1);
+        return 0; // Success
     }
 
-    /*
-        Method: removeCardFromBinder
-
-        Purpose: Removes a card from a binder at a specific index and returns
-        it to the main collection.
-
-        Returns: true if the removal was successful, false otherwise.
-
-        @param cardIndex: The index of the card to remove from the binder's list.
-        @param binderName: The name of the binder.
-    */
+    /**
+     * Removes a card from a binder at a specific index and returns it to the main collection.
+     * @param cardIndex The index of the card to remove from the binder's list.
+     * @param binderName The name of the binder.
+     * @return true if the removal was successful, false otherwise.
+     */
     public boolean removeCardFromBinder(int cardIndex, String binderName) {
         Binder binder = findBinder(binderName);
-        if (binder == null) return false;
+        if (binder == null)
+            return false;
 
         Card removedCard = binder.removeCard(cardIndex);
         if (removedCard != null) {
             collectionManager.increaseCount(removedCard.getName(), 1);
             return true;
         }
+
         return false;
     }
 
-    /*
-        Method: performTrade
-
-        Purpose: Executes a 1-for-1 card trade. The outgoing card is removed =
-        permanently, and the incoming card is added to the binder.
-
-        @return true if the trade was successful, false otherwise.
-
-        @param binderName The name of the binder where the trade occurs.
-        @param outgoingCardIndex The index of the card being given up.
-        @param incomingCard The new Card object being received. Must be a
-                            valid, pre-constructed card.
-    */
+    /**
+     * Executes a 1-for-1 card trade if the binder type allows it. The outgoing card
+     * is removed permanently, and the incoming card is added to the binder.
+     * @param binderName The name of the binder where the trade occurs.
+     * @param outgoingCardIndex The index of the card being given up.
+     * @param incomingCard The new Card object being received. Must be a valid, pre-constructed card.
+     * @return true if the trade was successful, false otherwise.
+     */
     public boolean performTrade(String binderName, int outgoingCardIndex, Card incomingCard) {
         Binder binder = findBinder(binderName);
-        if (binder == null || incomingCard == null) return false;
+        if (binder == null || incomingCard == null)
+            return false;
+
+        if (!binder.canTrade()) {
+            System.out.println("Error: Cards cannot be traded from this type of binder.");
+            return false;
+        }
+
+        if (!binder.canAddCard(incomingCard)) {
+             System.out.println("Error: The incoming card does not meet the requirements for this binder.");
+            return false;
+        }
 
         Card outgoingCard = binder.removeCard(outgoingCardIndex);
-        if (outgoingCard == null) return false;
+        if (outgoingCard == null)
+            return false;
 
-        // If the incoming card is a new type, add it to the master list first.
         if (collectionManager.findCard(incomingCard.getName()) == null) {
-            // Use the full add method which handles exceptions internally
             collectionManager.addNewCard(incomingCard.getName(), incomingCard.getBaseValue(), incomingCard.getRarity(), incomingCard.getVariant());
-            // Immediately decrease its count, as it's going into the binder, not the "available" pool.
             collectionManager.decreaseCount(incomingCard.getName(), 1);
         }
         
@@ -172,13 +234,10 @@ public class BinderManager {
         return true;
     }
 
-    /*
-        Method: getBinders
-
-        Purpose: Gets a defensive copy of the list of all binders.
-
-        Returns: A new ArrayList containing all Binder objects.
-    */
+    /**
+     * Gets a defensive copy of the list of all binders.
+     * @return A new ArrayList containing all Binder objects.
+     */
     public ArrayList<Binder> getBinders() {
         return new ArrayList<>(binders);
     }
