@@ -1,8 +1,9 @@
 package com.tcis.gui;
 
 import com.tcis.InventorySystem;
-import com.tcis.gui.main.MainFrame;
+import com.tcis.gui.MainFrame;
 import com.tcis.models.binder.Binder;
+import com.tcis.models.card.Card;
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;

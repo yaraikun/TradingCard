@@ -1,7 +1,7 @@
 package com.tcis.gui;
 
 import com.tcis.InventorySystem;
-import com.tcis.gui.main.MainFrame;
+import com.tcis.gui.MainFrame;
 import com.tcis.models.card.Card;
 import com.tcis.models.card.Rarity;
 import com.tcis.models.card.Variant;

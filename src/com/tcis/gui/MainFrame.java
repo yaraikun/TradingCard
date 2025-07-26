@@ -1,4 +1,4 @@
-package com.tcis.gui.main;
+package com.tcis.gui;
 
 import com.tcis.InventorySystem;
 import com.tcis.gui.BinderPanel;

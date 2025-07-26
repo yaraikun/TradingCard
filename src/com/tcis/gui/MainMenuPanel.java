@@ -1,6 +1,6 @@
 package com.tcis.gui;
 
-import com.tcis.gui.main.MainFrame;
+import com.tcis.gui.MainFrame;
 import javax.swing.*;
 import java.awt.*;
 
