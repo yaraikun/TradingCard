@@ -4,9 +4,9 @@ import com.tcis.models.card.Card;
 import com.tcis.models.card.Rarity;
 
 /**
- * Represents a sellable binder that can only contain Common and Uncommon cards.
- * When sold, its price is the sum of the real values of its cards, with no
- * handling fee.
+ * Represents a sellable binder that can only contain Common and Uncommon
+ * cards. When sold, its price is the sum of the real values of its cards,
+ * with no handling fee.
  */
 public class PauperBinder extends SellableBinder {
 

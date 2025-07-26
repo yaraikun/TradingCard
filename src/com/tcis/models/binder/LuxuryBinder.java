@@ -73,7 +73,8 @@ public class LuxuryBinder extends SellableBinder {
                            ? this.customPrice
                            : getTotalCardValue();
 
-        // The sale incurs a 10% handling fee on the base price (either custom or calculated)
+        // The sale incurs a 10% handling fee on the base price (either custom
+        // or calculated)
         return basePrice * 1.10;
     }
 }

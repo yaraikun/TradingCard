@@ -50,7 +50,8 @@ public abstract class Binder {
     }
 
     /**
-     * Returns a defensive copy of the cards list to protect the internal state.
+     * Returns a defensive copy of the cards list to protect the internal
+     * state.
      * @return A new ArrayList containing the cards in this binder.
      */
     public ArrayList<Card> getCards() {
