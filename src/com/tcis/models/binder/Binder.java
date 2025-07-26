@@ -69,7 +69,7 @@ public abstract class Binder {
     /**
      * Checks if the binder has reached its maximum capacity.
      * @return true if the number of cards has reached the limit, false
-     * otherwise.
+     *         otherwise.
      */
     public boolean isFull() {
         return this.cards.size() >= MAX_CAPACITY;
@@ -96,12 +96,12 @@ public abstract class Binder {
      * Removes a card from a specific index in the binder.
      * @param index The zero-based index of the card to remove.
      * @return The removed Card object if the index was valid, or null if it
-     * was out of bounds.
+     *         was out of bounds.
      */
     public Card removeCard(int index) {
-        if (index >= 0 && index < this.cards.size()) {
+        if (index >= 0 && index < this.cards.size())
             return this.cards.remove(index);
-        }
+
         return null;
     }
 
