@@ -1,31 +1,29 @@
 import com.tcis.InventorySystem;
-import java.util.Scanner;
+import javax.swing.SwingUtilities;
 
-/*
-    Class: Main
-    
-    Purpose:
-    The main entry point for the Trading Card Inventory System. Its sole
-    responsibility is to instantiate the primary controller class (`InventorySystem`)
-    and start the application's execution loop.
-*/
+/**
+ * The main entry point for the Trading Card Inventory System application.
+ * Its sole responsibility is to create the main controller class (`InventorySystem`)
+ * and start its execution loop on the AWT Event Dispatch Thread (EDT), which is
+ * the standard and required practice for all Swing applications to ensure thread safety.
+ */
 public class Main {
-    /*
-        Method: main
-        
-        Purpose:
-        The main method that is executed by the Java Virtual Machine to launch the
-        application. It creates all necessary top-level components and hands off
-        control to the InventorySystem's run method.
-        
-        Returns:
-        void. The application terminates when this method completes.
-        
-        @param args: Command line arguments, which are not used in this application.
-    */
+    /**
+     * The main method that is executed by the Java Virtual Machine to launch the application.
+     * @param args Command line arguments, which are not used in this application.
+     */
     public static void main(String[] args) {
-        // The InventorySystem now manages the Scanner, so we only create it here.
-        InventorySystem tcis = new InventorySystem();
-        tcis.run();
+        // Swing GUI operations should be performed on the Event Dispatch Thread (EDT)
+        // to prevent concurrency issues. SwingUtilities.invokeLater places the
+        // GUI creation and startup code on the EDT's event queue.
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                // The InventorySystem now manages the entire application lifecycle,
+                // including the creation of the main GUI frame.
+                InventorySystem tcis = new InventorySystem();
+                tcis.run();
+            }
+        });
     }
 }
