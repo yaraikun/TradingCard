@@ -37,15 +37,15 @@ public class Card {
      * @throws IllegalArgumentException if any parameter is invalid.
      */
     public Card(String name, double baseValue, Rarity rarity, Variant variant) {
-        if (name == null || name.trim().isEmpty()) {
+        if (name == null || name.trim().isEmpty())
             throw new IllegalArgumentException("Card name cannot be null or blank.");
-        }
-        if (baseValue < 0) {
+
+        if (baseValue < 0)
             throw new IllegalArgumentException("Base value cannot be negative.");
-        }
-        if (rarity == null || variant == null) {
+
+        if (rarity == null || variant == null)
             throw new IllegalArgumentException("Rarity and Variant cannot be null.");
-        }
+
         this.name = name.trim();
         this.baseValue = baseValue;
         this.rarity = rarity;
