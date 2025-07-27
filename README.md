@@ -5,321 +5,332 @@
 ---
 
 ```mermaid
+---
+config:
+  layout: elk
+  elk:
+    nodePlacementStrategy: LINEAR_SEGMENTS
+  theme: redux
+  look: neo
+  class:
+    hideEmptyMembersBox: true
+---
 classDiagram
-    direction TB
-
-    %% === Main & Controller Layer ===
+direction TB
     class InventorySystem {
-        <<Facade>>
-        - totalMoney: double
-        - collectionManager: CollectionManager
-        - binderManager: BinderManager
-        - deckManager: DeckManager
-        + InventorySystem()
-        + run(): void
-        + getTotalMoney(): double
-        + sellCardFromCollection(cardName: String): boolean
-        + createBinder(name: String, type: String): boolean
-        + deleteBinder(name: String): boolean
-        + sellBinder(binderName: String): boolean
-        + getBinders(): ArrayList<Binder>
-        + findBinder(name: String): Binder
-        + addCardToBinder(cardName: String, binderName: String): int
-        + removeCardFromBinder(cardIndex: int, binderName: String): boolean
-        + performTrade(binderName: String, cardIndex: int, incomingCard: Card): boolean
-        + createDeck(name: String, type: String): boolean
-        + deleteDeck(name: String): boolean
-        + sellDeck(deckName: String): boolean
-        + getDecks(): ArrayList<Deck>
-        + findDeck(name: String): Deck
-        + getCardTypes(): ArrayList<Card>
-        + findCard(name: String): Card
-        + getCardCounts(): HashMap<String, Integer>
-        + increaseCardCount(name: String, amount: int): boolean
-        + decreaseCardCount(name: String, amount: int): boolean
+	    - totalMoney: double
+	    - collectionManager: CollectionManager
+	    - binderManager: BinderManager
+	    - deckManager: DeckManager
+	    + InventorySystem()
+	    + run() void
+	    + getTotalMoney() double
+	    + sellCardFromCollection(cardName: String) boolean
+	    + createBinder(name: String, type: String) boolean
+	    + deleteBinder(name: String) boolean
+	    + sellBinder(binderName: String) boolean
+	    + getBinders() ArrayList~Binder~
+	    + findBinder(name: String) Binder
+	    + addCardToBinder(cardName: String, binderName: String) int
+	    + removeCardFromBinder(cardIndex: int, binderName: String) boolean
+	    + performTrade(binderName: String, cardIndex: int, incomingCard: Card) boolean
+	    + createDeck(name: String, type: String) boolean
+	    + deleteDeck(name: String) boolean
+	    + sellDeck(deckName: String) boolean
+	    + getDecks() ArrayList~Deck~
+	    + findDeck(name: String) Deck
+	    + getCardTypes() ArrayList~Card~
+	    + findCard(name: String) Card
+	    + getCardCounts() HashMap~String, Integer~
+	    + increaseCardCount(name: String, amount: int) boolean
+	    + decreaseCardCount(name: String, amount: int) boolean
     }
-
-    %% === Backend Layer (com.tcis.backend) ===
     class CollectionManager {
-        - cardTypes: ArrayList<Card>
-        - cardCounts: HashMap<String, Integer>
-        + CollectionManager()
-        + findCard(name: String): Card
-        + addNewCard(name: String, baseValue: double, rarity: Rarity, variant: Variant): boolean
-        + increaseCount(name: String, amount: int): boolean
-        + decreaseCount(name: String, amount: int): boolean
-        + isCardAvailable(name: String): boolean
-        + getCardTypes(): ArrayList<Card>
-        + getCardCounts(): HashMap<String, Integer>
-        + sellCard(cardName: String): boolean
+	    - cardTypes: ArrayList~Card~
+	    - cardCounts: HashMap~String, Integer~
+	    + CollectionManager()
+	    + findCard(name: String) Card
+	    + addNewCard(name: String, baseValue: double, rarity: Rarity, variant: Variant) boolean
+	    + increaseCount(name: String, amount: int) boolean
+	    + decreaseCount(name: String, amount: int) boolean
+	    + isCardAvailable(name: String) boolean
+	    + getCardTypes() ArrayList~Card~
+	    + getCardCounts() HashMap~String, Integer~
+	    + sellCard(cardName: String) boolean
     }
     class BinderManager {
-        - binders: ArrayList<Binder>
-        - collectionManager: CollectionManager
-        + BinderManager(cm: CollectionManager)
-        + findBinder(name: String): Binder
-        + createBinder(name: String, type: String): boolean
-        + deleteBinder(name: String): boolean
-        + sellBinder(name: String): double
-        + addCardToBinder(cardName: String, binderName: String): int
-        + removeCardFromBinder(cardIndex: int, binderName: String): boolean
-        + performTrade(binderName: String, cardIndex: int, incomingCard: Card): boolean
-        + getBinders(): ArrayList<Binder>
+	    - binders: ArrayList~Binder~
+	    - collectionManager: CollectionManager
+	    + BinderManager(cm: CollectionManager)
+	    + findBinder(name: String) Binder
+	    + createBinder(name: String, type: String) boolean
+	    + deleteBinder(name: String) boolean
+	    + sellBinder(name: String) double
+	    + addCardToBinder(cardName: String, binderName: String) int
+	    + removeCardFromBinder(cardIndex: int, binderName: String) boolean
+	    + performTrade(binderName: String, cardIndex: int, incomingCard: Card) boolean
+	    + getBinders() ArrayList~Binder~
     }
     class DeckManager {
-        - decks: ArrayList<Deck>
-        - collectionManager: CollectionManager
-        + DeckManager(cm: CollectionManager)
-        + findDeck(name: String): Deck
-        + createDeck(name: String, type: String): boolean
-        + deleteDeck(name: String): boolean
-        + sellDeck(name: String): double
-        + addCardToDeck(cardName: String, deckName: String): int
-        + removeCardFromDeck(cardIndex: int, deckName: String): boolean
-        + getDecks(): ArrayList<Deck>
+	    - decks: ArrayList~Deck~
+	    - collectionManager: CollectionManager
+	    + DeckManager(cm: CollectionManager)
+	    + findDeck(name: String) Deck
+	    + createDeck(name: String, type: String) boolean
+	    + deleteDeck(name: String) boolean
+	    + sellDeck(name: String) double
+	    + addCardToDeck(cardName: String, deckName: String) int
+	    + removeCardFromDeck(cardIndex: int, deckName: String) boolean
+	    + getDecks() ArrayList~Deck~
     }
-    InventorySystem *-- CollectionManager : has [1]
-    InventorySystem *-- BinderManager : has [1]
-    InventorySystem *-- DeckManager : has [1]
-    BinderManager ..> CollectionManager : uses [1]
-    DeckManager ..> CollectionManager : uses [1]
-
-    %% === GUI Layer (com.tcis.gui) ===
     class MainFrame {
-        - inventory: InventorySystem
-        - totalMoneyLabel: JLabel
-        - manageCollectionBtn: JButton
-        - manageBindersBtn: JButton
-        - manageDecksBtn: JButton
-        + MainFrame(inventory: InventorySystem)
-        + updateTotalMoneyLabel(): void
+	    - inventory: InventorySystem
+	    - cardLayout: CardLayout
+	    - mainPanel: JPanel
+	    - mainMenuPanel: MainMenuPanel
+	    - collectionPanel: CollectionPanel
+	    - binderPanel: BinderPanel
+	    - binderContentsPanel: BinderContentsPanel
+	    - deckPanel: DeckPanel
+	    - deckContentsPanel: DeckContentsPanel
+	    + MainFrame(inventory: InventorySystem)
+	    + showPanel(panelName: String) void
+	    + showBinderContents(binderName: String) void
+	    + showDeckContents(deckName: String) void
+	    + updateTotalMoney() void
     }
-    class CollectionDialog {
-        - inventory: InventorySystem
-        - mainFrame: MainFrame
-        - cardList: JList
-        - cardListModel: DefaultListModel
-        - addCardBtn: JButton
-        - sellCardBtn: JButton
-        - updateCountBtn: JButton
-        + CollectionDialog(parent: Frame, inventory: InventorySystem)
-        - refreshCardList(): void
+    class MainMenuPanel {
+	    - mainFrame: MainFrame
+	    + MainMenuPanel(mainFrame: MainFrame)
     }
-    class BinderDialog {
-        - inventory: InventorySystem
-        - mainFrame: MainFrame
-        - binderList: JList
-        - binderListModel: DefaultListModel
-        - createBtn: JButton
-        - viewBtn: JButton
-        - sellBtn: JButton
-        - deleteBtn: JButton
-        + BinderDialog(parent: Frame, inventory: InventorySystem)
-        - refreshBinderList(): void
-        - updateButtonStates(): void
+    class CollectionPanel {
+	    - inventory: InventorySystem
+	    - mainFrame: MainFrame
+	    - cardListModel: DefaultListModel
+	    + CollectionPanel(mainFrame: MainFrame, inventory: InventorySystem)
+	    + refreshView() void
+	    - updateButtonStates() void
+	    - handleAddCard() void
+	    - handleViewDetails() void
+	    - handleUpdateCount() void
+	    - handleSellCard() void
     }
-    class DeckDialog {
-        - inventory: InventorySystem
-        - mainFrame: MainFrame
-        - deckList: JList
-        - deckListModel: DefaultListModel
-        - createBtn: JButton
-        - viewBtn: JButton
-        - sellBtn: JButton
-        - deleteBtn: JButton
-        + DeckDialog(parent: Frame, inventory: InventorySystem)
-        - refreshDeckList(): void
-        - updateButtonStates(): void
+    class BinderPanel {
+	    - inventory: InventorySystem
+	    - mainFrame: MainFrame
+	    - binderListModel: DefaultListModel
+	    - sellBtn: JButton
+	    + BinderPanel(mainFrame: MainFrame, inventory: InventorySystem)
+	    + refreshView() void
+	    - updateButtonStates() void
+	    - handleCreate() void
+	    - handleView() void
+	    - handleDelete() void
+	    - handleSell() void
     }
-    class AddCardDialog {
-        - inventory: InventorySystem
-        - nameField: JTextField
-        - valueField: JTextField
-        - rarityComboBox: JComboBox
-        - variantComboBox: JComboBox
-        - addBtn: JButton
-        - cancelBtn: JButton
-        + AddCardDialog(parent: Dialog, inventory: InventorySystem)
+    class DeckPanel {
+	    - inventory: InventorySystem
+	    - mainFrame: MainFrame
+	    - deckListModel: DefaultListModel
+	    - sellBtn: JButton
+	    + DeckPanel(mainFrame: MainFrame, inventory: InventorySystem)
+	    + refreshView() void
+	    - updateButtonStates() void
+	    - handleCreate() void
+	    - handleView() void
+	    - handleDelete() void
+	    - handleSell() void
     }
-    class CreateBinderDialog {
-        - inventory: InventorySystem
-        - nameField: JTextField
-        - typeComboBox: JComboBox
-        + CreateBinderDialog(parent: Dialog, inventory: InventorySystem)
+    class BinderContentsPanel {
+	    - inventory: InventorySystem
+	    - mainFrame: MainFrame
+	    - currentBinder: Binder
+	    - tradeBtn: JButton
+	    - setPriceBtn: JButton
+	    + BinderContentsPanel(mainFrame: MainFrame, inventory: InventorySystem)
+	    + loadBinder(binderName: String) void
+	    - refreshView() void
+	    - updateButtonStates() void
+	    - handleAddCard() void
+	    - handleRemoveCard() void
+	    - handleTrade() void
+	    - handleSetPrice() void
     }
-    class CreateDeckDialog {
-        - inventory: InventorySystem
-        - nameField: JTextField
-        - typeComboBox: JComboBox
-        + CreateDeckDialog(parent: Dialog, inventory: InventorySystem)
+    class DeckContentsPanel {
+	    - inventory: InventorySystem
+	    - mainFrame: MainFrame
+	    - currentDeck: Deck
+	    + DeckContentsPanel(mainFrame: MainFrame, inventory: InventorySystem)
+	    + loadDeck(deckName: String) void
+	    - refreshView() void
+	    - handleAddCard() void
+	    - handleRemoveCard() void
     }
-    class BinderContentsDialog {
-        - binder: Binder
-        - inventory: InventorySystem
-        - cardListModel: DefaultListModel
-        - addCardBtn: JButton
-        - removeCardBtn: JButton
-        - tradeBtn: JButton
-        - setPriceBtn: JButton
-        + BinderContentsDialog(parent: Dialog, inventory: InventorySystem, binderName: String)
-        - refreshContentsList(): void
-        - updateButtonStates(): void
-    }
-    class DeckContentsDialog {
-        - deck: Deck
-        - inventory: InventorySystem
-        - cardListModel: DefaultListModel
-        + DeckContentsDialog(parent: Dialog, inventory: InventorySystem, deckName: String)
-        - refreshContentsList(): void
-    }
-    class SetPriceDialog {
-        - luxuryBinder: LuxuryBinder
-        + SetPriceDialog(parent: Dialog, binder: LuxuryBinder)
-    }
-    class TradeDialog {
-        - inventory: InventorySystem
-        - binder: Binder
-        - outgoingCardIndex: int
-        + TradeDialog(parent: Dialog, inventory: InventorySystem, binder: Binder, outgoingCardIndex: int)
-    }
-
-    MainFrame --o CollectionDialog : opens [1]
-    MainFrame --o BinderDialog : opens [1]
-    MainFrame --o DeckDialog : opens [1]
-    CollectionDialog --o AddCardDialog : opens [1]
-    BinderDialog --o CreateBinderDialog : opens [1]
-    BinderDialog --o BinderContentsDialog : opens [1]
-    DeckDialog --o CreateDeckDialog : opens [1]
-    DeckDialog --o DeckContentsDialog : opens [1]
-    BinderContentsDialog --o TradeDialog : opens [1]
-    BinderContentsDialog --o SetPriceDialog : opens [1]
-
-    MainFrame ..> InventorySystem : uses [1]
-
-    %% === Models Layer (com.tcis.models) ===
     class Card {
-        - name: String
-        - baseValue: double
-        - rarity: Rarity
-        - variant: Variant
-        + Card(name: String, baseValue: double, rarity: Rarity, variant: Variant)
-        + getName(): String
-        + getBaseValue(): double
-        + getRarity(): Rarity
-        + getVariant(): Variant
-        + getCalculatedValue(): double
+	    - name: String
+	    - baseValue: double
+	    - rarity: Rarity
+	    - variant: Variant
+	    + Card(name: String, baseValue: double, rarity: Rarity, variant: Variant)
+	    + getName() String
+	    + getBaseValue() double
+	    + getRarity() Rarity
+	    + getVariant() Variant
+	    + getCalculatedValue() double
     }
     class Rarity {
-        + COMMON
-        + UNCOMMON
-        + RARE
-        + LEGENDARY
-        + getDisplayName(): String
-        + fromString(text: String): Rarity
+	    - displayName: String
+	    + COMMON$
+	    + UNCOMMON$
+	    + RARE$
+	    + LEGENDARY$
+	    - Rarity(displayName: String)
+	    + getDisplayName() String
+	    + fromInt(choice: int) Rarity$
     }
     class Variant {
-        + NORMAL
-        + EXTENDED_ART
-        + FULL_ART
-        + ALT_ART
-        + getDisplayName(): String
-        + getMultiplier(): double
-        + fromString(text: String): Variant
+	    - displayName: String
+	    - multiplier: double
+	    + NORMAL$
+	    + EXTENDED_ART$
+	    + FULL_ART$
+	    + ALT_ART$
+	    - Variant(displayName: String, multiplier: double)
+	    + getDisplayName() String
+	    + getMultiplier() double
+	    + fromInt(choice: int) Variant$
     }
-    Card *-- Rarity : has [1]
-    Card *-- Variant : has [1]
-
     class Deck {
-        <<Abstract>>
-        + MAX_CAPACITY: int
-        # name: String
-        # cards: ArrayList<Card>
-        + Deck(name: String)
-        + getName(): String
-        + getCards(): ArrayList<Card>
-        + getCardCount(): int
-        + addCard(card: Card): boolean
-        + isFull(): boolean
-        + containsCard(cardName: String): boolean
-        + isSellable(): boolean
+	    + MAX_CAPACITY: int$
+	    # name: String
+	    # cards: ArrayList~Card~
+	    + Deck(name: String)
+	    + getName() String
+	    + getCards() ArrayList~Card~
+	    + getCardCount() int
+	    + addCard(card: Card) boolean
+	    + isFull() boolean
+	    + containsCard(cardName: String) boolean
+	    + isSellable() boolean*
     }
     class NormalDeck {
-        + NormalDeck(name: String)
-        + isSellable(): boolean
+	    + NormalDeck(name: String)
+	    + isSellable() boolean
     }
     class SellableDeck {
-        + SellableDeck(name: String)
-        + isSellable(): boolean
+	    + SellableDeck(name: String)
+	    + isSellable() boolean
     }
-    Deck <|-- NormalDeck
-    Deck <|-- SellableDeck
-
     class Binder {
-        <<Abstract>>
-        + MAX_CAPACITY: int
-        # name: String
-        # cards: ArrayList<Card>
-        + Binder(name: String)
-        + getName(): String
-        + getCards(): ArrayList<Card>
-        + getCardCount(): int
-        + addCard(card: Card): boolean
-        + isFull(): boolean
-        + canAddCard(card: Card): boolean
-        + isSellable(): boolean
-        + canTrade(): boolean
-        + calculatePrice(): double
+	    + MAX_CAPACITY: int$
+	    # name: String
+	    # cards: ArrayList~Card~
+	    + Binder(name: String)
+	    + getName() String
+	    + getCards() ArrayList~Card~
+	    + getCardCount() int
+	    + addCard(card: Card) boolean
+	    + isFull() boolean
+	    + canAddCard(card: Card) boolean*
+	    + isSellable() boolean*
+	    + canTrade() boolean*
+	    + calculatePrice() double*
     }
     class NonCuratedBinder {
-        + NonCuratedBinder(name: String)
-        + canAddCard(card: Card): boolean
-        + isSellable(): boolean
-        + canTrade(): boolean
-        + calculatePrice(): double
+	    + NonCuratedBinder(name: String)
+	    + canAddCard(card: Card) boolean
+	    + isSellable() boolean
+	    + canTrade() boolean
+	    + calculatePrice() double
     }
     class CollectorBinder {
-        + CollectorBinder(name: String)
-        + canAddCard(card: Card): boolean
-        + isSellable(): boolean
-        + canTrade(): boolean
-        + calculatePrice(): double
+	    + CollectorBinder(name: String)
+	    + canAddCard(card: Card) boolean
+	    + isSellable() boolean
+	    + canTrade() boolean
+	    + calculatePrice() double
     }
     class SellableBinder {
-        <<Abstract>>
-        + SellableBinder(name: String)
-        + isSellable(): boolean
-        + canTrade(): boolean
+	    + SellableBinder(name: String)
+	    + isSellable() boolean
+	    + canTrade() boolean
     }
     class PauperBinder {
-        + PauperBinder(name: String)
-        + canAddCard(card: Card): boolean
-        + calculatePrice(): double
+	    + PauperBinder(name: String)
+	    + canAddCard(card: Card) boolean
+	    + calculatePrice() double
     }
     class RaresBinder {
-        + RaresBinder(name: String)
-        + canAddCard(card: Card): boolean
-        + calculatePrice(): double
+	    + RaresBinder(name: String)
+	    + canAddCard(card: Card) boolean
+	    + calculatePrice() double
     }
     class LuxuryBinder {
-        - customPrice: double
-        + LuxuryBinder(name: String)
-        + canAddCard(card: Card): boolean
-        + calculatePrice(): double
-        + setPrice(price: double): boolean
+	    - customPrice: double
+	    + LuxuryBinder(name: String)
+	    + canAddCard(card: Card) boolean
+	    + calculatePrice() double
+	    + setPrice(price: double) boolean
     }
-    Binder <|-- NonCuratedBinder
-    Binder <|-- CollectorBinder
-    Binder <|-- SellableBinder
-    SellableBinder <|-- PauperBinder
-    SellableBinder <|-- RaresBinder
-    SellableBinder <|-- LuxuryBinder
 
-    CollectionManager o-- Card : manages [*]
-    BinderManager o-- Binder : manages [*]
-    DeckManager o-- Deck : manages [*]
-    Binder o-- Card : contains [*]
-    Deck o-- Card : contains [*]
+	<<Facade>> InventorySystem
+	<<JFrame>> MainFrame
+	<<JPanel>> MainMenuPanel
+	<<JPanel>> CollectionPanel
+	<<JPanel>> BinderPanel
+	<<JPanel>> DeckPanel
+	<<JPanel>> BinderContentsPanel
+	<<JPanel>> DeckContentsPanel
+	<<Enum>> Rarity
+	<<Enum>> Variant
+	<<Abstract>> Deck
+	<<Abstract>> Binder
+	<<Abstract>> SellableBinder
 
+InventorySystem *-- "1" CollectionManager : has
+InventorySystem *-- "1" BinderManager : has
+InventorySystem *-- "1" DeckManager : has
+BinderManager ..> "1" CollectionManager : uses
+DeckManager ..> "1" CollectionManager : uses
+InventorySystem ..> "1" MainFrame : uses
+
+MainFrame *-- "1" MainMenuPanel : contains
+MainFrame *-- "1" CollectionPanel : contains
+MainFrame *-- "1" BinderPanel : contains
+MainFrame *-- "1" BinderContentsPanel : contains
+MainFrame *-- "1" DeckPanel : contains
+MainFrame *-- "1" DeckContentsPanel : contains
+
+MainMenuPanel ..> "1" MainFrame : uses
+CollectionPanel ..> "1" MainFrame : uses
+BinderPanel ..> "1" MainFrame : uses
+BinderContentsPanel ..> "1" MainFrame : uses
+DeckPanel ..> "1" MainFrame : uses
+DeckContentsPanel ..> "1" MainFrame : uses
+
+CollectionPanel ..> "1" InventorySystem : uses
+BinderPanel ..> "1" InventorySystem : uses
+BinderContentsPanel ..> "1" InventorySystem : uses
+DeckPanel ..> "1" InventorySystem : uses
+DeckContentsPanel ..> "1" InventorySystem : uses
+
+Card *-- "1" Rarity : has
+Card *-- "1" Variant : has
+
+Deck <|-- NormalDeck : extends
+Deck <|-- SellableDeck : extends
+Binder <|-- NonCuratedBinder : extends
+Binder <|-- CollectorBinder : extends
+Binder <|-- SellableBinder : extends
+SellableBinder <|-- PauperBinder : extends
+SellableBinder <|-- RaresBinder : extends
+SellableBinder <|-- LuxuryBinder : extends
+
+CollectionManager o-- "0..*" Card : manages
+BinderManager o-- "0..*" Binder : manages
+DeckManager o-- "0..*" Deck : manages
+Binder o-- "0..20" Card : contains
+Deck o-- "0..10*" Card : contains
 ```
 
 ---
