@@ -27,9 +27,10 @@ direction TB
 	    + run() void
 	    + getTotalMoney() double
 	    + sellCardFromCollection(cardName: String) boolean
+		+ sellBinder(binderName: String) boolean
+	    + sellDeck(deckName: String) boolean
 	    + createBinder(name: String, type: String) boolean
 	    + deleteBinder(name: String) boolean
-	    + sellBinder(binderName: String) boolean
 	    + getBinders() ArrayList~Binder~
 	    + findBinder(name: String) Binder
 	    + addCardToBinder(cardName: String, binderName: String) int
@@ -37,14 +38,17 @@ direction TB
 	    + performTrade(binderName: String, cardIndex: int, incomingCard: Card) boolean
 	    + createDeck(name: String, type: String) boolean
 	    + deleteDeck(name: String) boolean
-	    + sellDeck(deckName: String) boolean
 	    + getDecks() ArrayList~Deck~
 	    + findDeck(name: String) Deck
-	    + getCardTypes() ArrayList~Card~
+		+ addCardToDeck(c: String, d: String) int
+		+ removeCardFromDeck(i: int, n: String) boolean
+		+ addNewCard(n: String, v: double, r: Rarity, t: Variant) boolean
 	    + findCard(name: String) Card
-	    + getCardCounts() HashMap~String, Integer~
 	    + increaseCardCount(name: String, amount: int) boolean
 	    + decreaseCardCount(name: String, amount: int) boolean
+	    + getCardTypes() ArrayList~Card~
+	    + getCardCounts() HashMap~String, Integer~
+		+ isCardAvailable(name: String) boolean
     }
     class CollectionManager {
 	    - cardTypes: ArrayList~Card~
@@ -54,10 +58,10 @@ direction TB
 	    + addNewCard(name: String, baseValue: double, rarity: Rarity, variant: Variant) boolean
 	    + increaseCount(name: String, amount: int) boolean
 	    + decreaseCount(name: String, amount: int) boolean
+	    + sellCard(cardName: String) boolean
 	    + isCardAvailable(name: String) boolean
 	    + getCardTypes() ArrayList~Card~
 	    + getCardCounts() HashMap~String, Integer~
-	    + sellCard(cardName: String) boolean
     }
     class BinderManager {
 	    - binders: ArrayList~Binder~
@@ -88,11 +92,12 @@ direction TB
 	    - inventory: InventorySystem
 	    - cardLayout: CardLayout
 	    - mainPanel: JPanel
+		- totalMoneyLabel: JLabel
 	    - mainMenuPanel: MainMenuPanel
 	    - collectionPanel: CollectionPanel
 	    - binderPanel: BinderPanel
-	    - binderContentsPanel: BinderContentsPanel
 	    - deckPanel: DeckPanel
+	    - binderContentsPanel: BinderContentsPanel
 	    - deckContentsPanel: DeckContentsPanel
 	    + MainFrame(inventory: InventorySystem)
 	    + showPanel(panelName: String) void
@@ -108,6 +113,10 @@ direction TB
 	    - inventory: InventorySystem
 	    - mainFrame: MainFrame
 	    - cardListModel: DefaultListModel
+	    - cardList: JList~String~;
+        - sellCardButton: JButton;
+	    - updateCountButton: JButton;
+	    - viewDetailsButton: JButton;
 	    + CollectionPanel(mainFrame: MainFrame, inventory: InventorySystem)
 	    + refreshView() void
 	    - updateButtonStates() void
@@ -120,7 +129,10 @@ direction TB
 	    - inventory: InventorySystem
 	    - mainFrame: MainFrame
 	    - binderListModel: DefaultListModel
-	    - sellBtn: JButton
+	    - binderList: JList~String~;
+	    - viewButton: JButton;
+	    - sellButton: JButton;
+	    - deleteButton: JButton;
 	    + BinderPanel(mainFrame: MainFrame, inventory: InventorySystem)
 	    + refreshView() void
 	    - updateButtonStates() void
@@ -133,7 +145,10 @@ direction TB
 	    - inventory: InventorySystem
 	    - mainFrame: MainFrame
 	    - deckListModel: DefaultListModel
-	    - sellBtn: JButton
+	    - deckList: JList~String~;
+	    - viewButton: JButton;
+	    - sellButton: JButton;
+	    - deleteButton: JButton;
 	    + DeckPanel(mainFrame: MainFrame, inventory: InventorySystem)
 	    + refreshView() void
 	    - updateButtonStates() void
@@ -146,8 +161,15 @@ direction TB
 	    - inventory: InventorySystem
 	    - mainFrame: MainFrame
 	    - currentBinder: Binder
-	    - tradeBtn: JButton
-	    - setPriceBtn: JButton
+	    - binderListModel: DefaultListModel~String~;
+	    - binderCardList: JList~String~;
+	    - collectionListModel: DefaultListModel~String~;
+	    - collectionCardList: JList~String~;
+	    - addCardButton: JButton;
+	    - removeCardButton: JButton;
+	    - tradeButton: JButton;
+	    - setPriceButton: JButton;
+	    - binderTitleLabel: JLabel;
 	    + BinderContentsPanel(mainFrame: MainFrame, inventory: InventorySystem)
 	    + loadBinder(binderName: String) void
 	    - refreshView() void
@@ -161,6 +183,11 @@ direction TB
 	    - inventory: InventorySystem
 	    - mainFrame: MainFrame
 	    - currentDeck: Deck
+	    - deckListModel: DefaultListModel~String~;
+	    - deckCardList: JList~String~;
+	    - collectionListModel: DefaultListModel~String~;
+	    - collectionCardList: JList~String~;
+	    - deckTitleLabel: JLabel;
 	    + DeckContentsPanel(mainFrame: MainFrame, inventory: InventorySystem)
 	    + loadDeck(deckName: String) void
 	    - refreshView() void
@@ -209,9 +236,10 @@ direction TB
 	    + getName() String
 	    + getCards() ArrayList~Card~
 	    + getCardCount() int
-	    + addCard(card: Card) boolean
 	    + isFull() boolean
 	    + containsCard(cardName: String) boolean
+	    + addCard(card: Card) boolean
+	    + removeCard(index: int) Card
 	    + isSellable() boolean*
     }
     class NormalDeck {
@@ -230,8 +258,9 @@ direction TB
 	    + getName() String
 	    + getCards() ArrayList~Card~
 	    + getCardCount() int
-	    + addCard(card: Card) boolean
 	    + isFull() boolean
+	    + addCard(card: Card) boolean
+	    + removeCard(index: int) Card
 	    + canAddCard(card: Card) boolean*
 	    + isSellable() boolean*
 	    + canTrade() boolean*
