@@ -1,19 +1,23 @@
 package com.tcis.gui.panels;
 
-import com.tcis.InventorySystem;
-import com.tcis.gui.main.MainFrame;
-import com.tcis.models.card.Card;
-import com.tcis.models.deck.Deck;
 import javax.swing.*;
 import java.awt.*;
+
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 
+import com.tcis.InventorySystem;
+import com.tcis.gui.main.MainFrame;
+import com.tcis.models.card.Card;
+import com.tcis.models.deck.Deck;
+
 /**
  * A JPanel that displays the contents of a single, specific deck.
- * It provides the user interface for adding cards from the main collection into the deck
- * and removing cards from the deck.
+ *
+ * <p>It provides the user interface for adding cards from the main collection
+ * into the deck and removing cards from the deck, displaying the contents of
+ * both side-by-side for easy management.</p>
  */
 public class DeckContentsPanel extends JPanel {
     private final InventorySystem inventory;
@@ -29,6 +33,7 @@ public class DeckContentsPanel extends JPanel {
 
     /**
      * Constructs the DeckContentsPanel.
+     *
      * @param mainFrame The main application window for navigation.
      * @param inventory The backend facade for all application logic.
      */
@@ -55,7 +60,8 @@ public class DeckContentsPanel extends JPanel {
         collectionCardList = new JList<>(collectionListModel);
         collectionCardList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         JScrollPane collectionScrollPane = new JScrollPane(collectionCardList);
-        collectionScrollPane.setBorder(BorderFactory.createTitledBorder("Available in Collection"));
+        collectionScrollPane.setBorder(
+            BorderFactory.createTitledBorder("Available in Collection"));
         listsPanel.add(collectionScrollPane);
 
         add(listsPanel, BorderLayout.CENTER);
@@ -94,10 +100,17 @@ public class DeckContentsPanel extends JPanel {
         removeCardButton.addActionListener(e -> handleRemoveCard());
     }
 
+    /**
+     * Loads the data for a specific deck into this panel, making it ready
+     * for display.
+     *
+     * @param deckName The name of the deck to load.
+     */
     public void loadDeck(String deckName) {
         this.currentDeck = inventory.findDeck(deckName);
         if (currentDeck == null) {
-            JOptionPane.showMessageDialog(mainFrame, "Could not load deck.", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(mainFrame, "Could not load deck.",
+                "Error", JOptionPane.ERROR_MESSAGE);
             mainFrame.showPanel("deckPanel");
             return;
         }
@@ -105,35 +118,47 @@ public class DeckContentsPanel extends JPanel {
         refreshView();
     }
     
+    /**
+     * Refreshes both card lists by fetching the latest data from the backend.
+     */
     private void refreshView() {
-        if (currentDeck == null) return;
+        if (currentDeck == null)
+            return;
         
         deckListModel.clear();
         ArrayList<Card> deckCards = currentDeck.getCards();
         deckCards.sort(Comparator.comparing(Card::getName));
-        for (Card card : deckCards) {
+        for (Card card : deckCards)
             deckListModel.addElement(card.getName());
-        }
 
         collectionListModel.clear();
         ArrayList<Card> collectionCards = inventory.getCardTypes();
         HashMap<String, Integer> counts = inventory.getCardCounts();
         collectionCards.sort(Comparator.comparing(Card::getName));
         for (Card card : collectionCards) {
-            int count = counts.getOrDefault(card.getName().toLowerCase(), 0);
-            if (count > 0) {
-                collectionListModel.addElement(String.format("%s (Available: %d)", card.getName(), count));
-            }
+            int count = counts.getOrDefault(
+                card.getName().toLowerCase(), 0);
+            if (count > 0)
+                collectionListModel.addElement(String.format(
+                    "%s (Available: %d)", card.getName(), count));
         }
         
-        JScrollPane deckScrollPane = (JScrollPane) deckCardList.getParent().getParent();
-        deckScrollPane.setBorder(BorderFactory.createTitledBorder("Cards in Deck (" + currentDeck.getCardCount() + "/" + Deck.MAX_CAPACITY + ")"));
+        JScrollPane deckScrollPane =
+            (JScrollPane) deckCardList.getParent().getParent();
+        deckScrollPane.setBorder(BorderFactory.createTitledBorder(
+            "Cards in Deck (" + currentDeck.getCardCount() + "/" +
+            Deck.MAX_CAPACITY + ")"));
     }
 
+    /**
+     * Handles the logic for moving a card from the collection to the deck.
+     */
     private void handleAddCard() {
         String selectedValue = collectionCardList.getSelectedValue();
         if (selectedValue == null) {
-            JOptionPane.showMessageDialog(this, "Please select a card from the 'Available in Collection' list.", "No Selection", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Please select a card from " +
+                "the 'Available in Collection' list.", "No Selection",
+                JOptionPane.WARNING_MESSAGE);
             return;
         }
 
@@ -146,32 +171,42 @@ public class DeckContentsPanel extends JPanel {
             if (result == 3) error = "This deck is full.";
             if (result == 2) error = "No available copies of this card.";
             if (result == 1) error = "Card or Deck not found.";
-            JOptionPane.showMessageDialog(this, error, "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, error, "Error",
+                JOptionPane.ERROR_MESSAGE);
         }
         refreshView();
     }
 
+    /**
+     * Handles the logic for moving a card from the deck back to the
+     * collection. It correctly finds the original index of the card to prevent
+     * sorting-related bugs.
+     */
     private void handleRemoveCard() {
         String selectedValue = deckCardList.getSelectedValue();
         if (selectedValue == null) {
-            JOptionPane.showMessageDialog(this, "Please select a card from the 'Cards in Deck' list.", "No Selection", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Please select a card from " +
+                "the 'Cards in Deck' list.", "No Selection",
+                JOptionPane.WARNING_MESSAGE);
             return;
         }
-        String cardName = selectedValue;
 
         int originalIndex = -1;
-        ArrayList<Card> originalCards = inventory.findDeck(currentDeck.getName()).getCards();
-        for (int i = 0; i < originalCards.size(); i++) {
-            if (originalCards.get(i).getName().equals(cardName)) {
+        ArrayList<Card> originalCards =
+            inventory.findDeck(currentDeck.getName()).getCards();
+        for (int i = 0; i < originalCards.size(); i++)
+            if (originalCards.get(i).getName().equals(selectedValue)) {
                 originalIndex = i;
                 break;
             }
-        }
 
-        if (originalIndex != -1 && inventory.removeCardFromDeck(originalIndex, currentDeck.getName())) {
-            // Success is silent I'm done refactoring this.
+        if (originalIndex != -1 &&
+            inventory.removeCardFromDeck(originalIndex, currentDeck.getName())) {
+            // Success is silent
         } else {
-            JOptionPane.showMessageDialog(this, "An error occurred while removing the card.", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this,
+                "An error occurred while removing the card.", "Error",
+                JOptionPane.ERROR_MESSAGE);
         }
         refreshView();
     }

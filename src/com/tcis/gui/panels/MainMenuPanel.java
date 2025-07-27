@@ -6,15 +6,23 @@ import java.awt.*;
 
 /**
  * A JPanel that serves as the main menu or "home screen" of the application.
- * It contains navigation buttons to access the primary features of the system.
- * This panel is intended to be the default "card" in the MainFrame's CardLayout.
+ *
+ * <p>It contains navigation buttons to access the primary features of the
+ * system. This panel is intended to be the default "card" in the MainFrame's
+ * CardLayout.</p>
  */
 public class MainMenuPanel extends JPanel {
+    /**
+     * A reference to the MainFrame container. This is needed so that this
+     * panel's buttons can tell the MainFrame to switch to a different panel.
+     */
     private final MainFrame mainFrame;
 
     /**
      * Constructs the MainMenuPanel.
-     * @param mainFrame The main application window, which acts as the navigation controller.
+     *
+     * @param mainFrame The main application window, which acts as the
+     *                  navigation controller.
      */
     public MainMenuPanel(MainFrame mainFrame) {
         this.mainFrame = mainFrame;
@@ -41,13 +49,17 @@ public class MainMenuPanel extends JPanel {
         buttonPanel.add(manageBindersBtn);
         buttonPanel.add(manageDecksBtn);
 
+        // A wrapper panel is used to center the buttons vertically and
+        // horizontally within the BorderLayout.CENTER area.
         JPanel centerWrapper = new JPanel(new GridBagLayout());
         centerWrapper.add(buttonPanel);
         add(centerWrapper, BorderLayout.CENTER);
 
-        // --- Action Listeners for Buttons ---
-        manageCollectionBtn.addActionListener(e -> mainFrame.showPanel("collectionPanel"));
-        manageBindersBtn.addActionListener(e -> mainFrame.showPanel("binderPanel"));
-        manageDecksBtn.addActionListener(e -> mainFrame.showPanel("deckPanel"));
+        manageCollectionBtn.addActionListener(
+            e -> mainFrame.showPanel("collectionPanel"));
+        manageBindersBtn.addActionListener(
+            e -> mainFrame.showPanel("binderPanel"));
+        manageDecksBtn.addActionListener(
+            e -> mainFrame.showPanel("deckPanel"));
     }
 }
