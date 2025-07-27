@@ -1,23 +1,43 @@
 package com.tcis.gui.main;
 
-import com.tcis.InventorySystem;
-import com.tcis.gui.panels.*;
 import javax.swing.*;
 import java.awt.*;
 
+import com.tcis.InventorySystem;
+import com.tcis.gui.panels.*;
+
 /**
  * The main and only JFrame for the Trading Card Inventory System application.
- * It uses a CardLayout to manage and switch between different JPanels,
+ *
+ * <p>It uses a CardLayout to manage and switch between different JPanels,
  * creating a single-window user experience. It acts as the central navigator
- * for the GUI.
+ * for the GUI, owning all the panel instances and controlling which one is
+ * visible at any time.</p>
  */
 public class MainFrame extends JFrame {
+    /**
+     * A reference to the backend facade. This is passed to all child panels
+     * so they can interact with the application's logic.
+     */
     private final InventorySystem inventory;
+
+    /**
+     * The layout manager that enables switching between different panels.
+     */
     private final CardLayout cardLayout;
+
+    /**
+     * The main container panel that holds all other view panels.
+     */
     private final JPanel mainPanel;
+
+    /**
+     * The label used to display the user's current total money, updated after
+     * any sale.
+     */
     private JLabel totalMoneyLabel;
 
-    // Panels that will be part of the CardLayout
+    // Panel instances are stored as attributes for easy access and management.
     private MainMenuPanel mainMenuPanel;
     private CollectionPanel collectionPanel;
     private BinderPanel binderPanel;
@@ -27,9 +47,10 @@ public class MainFrame extends JFrame {
 
     /**
      * Constructs the MainFrame, initializing the CardLayout and all associated
-     * panels.
+     * view panels.
+     *
      * @param inventory The backend facade which provides all necessary data
-     *                  and logic.
+     *                  and logic for the GUI to function.
      */
     public MainFrame(InventorySystem inventory) {
         this.inventory = inventory;
@@ -37,7 +58,7 @@ public class MainFrame extends JFrame {
         setTitle("Trading Card Inventory System");
         setSize(800, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
+        setLocationRelativeTo(null); // Center the frame
 
         cardLayout = new CardLayout();
         mainPanel = new JPanel(cardLayout);
@@ -78,10 +99,12 @@ public class MainFrame extends JFrame {
     }
 
     /**
-     * Public method that allows other panels to request a switch to a
-     * different panel. This is the core navigation method for the entire GUI.
-     * Before showing a panel, it calls that panel's refresh method to ensure
-     * data is up-to-date.
+     * Allows other panels to request a switch to a different panel.
+     *
+     * <p>This is the core navigation method for the entire GUI. Before showing
+     * a panel, it calls that panel's refresh method to ensure its data is
+     * up-to-date.</p>
+     *
      * @param panelName The string identifier of the panel to show.
      */
     public void showPanel(String panelName) {
@@ -103,6 +126,7 @@ public class MainFrame extends JFrame {
     /**
      * A specialized method to show the binder contents panel, ensuring it's
      * loaded with the correct binder's data before being displayed.
+     *
      * @param binderName The name of the binder whose contents should be
      *                   displayed.
      */
@@ -114,6 +138,7 @@ public class MainFrame extends JFrame {
     /**
      * A specialized method to show the deck contents panel, ensuring it's
      * loaded with the correct deck's data before being displayed.
+     *
      * @param deckName The name of the deck whose contents should be displayed.
      */
     public void showDeckContents(String deckName) {
@@ -122,11 +147,11 @@ public class MainFrame extends JFrame {
     }
 
     /**
-     * Public method that allows other panels to request an update of the money
-     * display. This is called after any action that changes the user's total
-     * money.
+     * Allows other panels to request an update of the money display. This is
+     * called after any action that changes the user's total money.
      */
     public void updateTotalMoney() {
-        totalMoneyLabel.setText(String.format("Total Money: $%.2f", inventory.getTotalMoney()));
+        totalMoneyLabel.setText(
+            String.format("Total Money: $%.2f", inventory.getTotalMoney()));
     }
 }
