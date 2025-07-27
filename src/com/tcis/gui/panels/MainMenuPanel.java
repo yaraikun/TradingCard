@@ -41,7 +41,6 @@ public class MainMenuPanel extends JPanel {
         buttonPanel.add(manageBindersBtn);
         buttonPanel.add(manageDecksBtn);
 
-        // Add an inner panel to prevent buttons from stretching to fill the whole space
         JPanel centerWrapper = new JPanel(new GridBagLayout());
         centerWrapper.add(buttonPanel);
         add(centerWrapper, BorderLayout.CENTER);

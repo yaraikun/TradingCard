@@ -159,7 +159,6 @@ public class DeckContentsPanel extends JPanel {
         }
         String cardName = selectedValue;
 
-        // BUG FIX: Find the actual index in the original, unsorted list
         int originalIndex = -1;
         ArrayList<Card> originalCards = inventory.findDeck(currentDeck.getName()).getCards();
         for (int i = 0; i < originalCards.size(); i++) {
@@ -170,7 +169,7 @@ public class DeckContentsPanel extends JPanel {
         }
 
         if (originalIndex != -1 && inventory.removeCardFromDeck(originalIndex, currentDeck.getName())) {
-            // Success is silent
+            // Success is silent I'm done refactoring this.
         } else {
             JOptionPane.showMessageDialog(this, "An error occurred while removing the card.", "Error", JOptionPane.ERROR_MESSAGE);
         }

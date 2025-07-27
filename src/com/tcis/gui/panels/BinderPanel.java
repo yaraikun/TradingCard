@@ -110,7 +110,6 @@ public class BinderPanel extends JPanel {
      * MainFrame whenever this panel is shown.
      */
     public void refreshView() {
-        // Save the currently selected index
         int selectedIndex = binderList.getSelectedIndex();
 
         binderListModel.clear();
@@ -121,7 +120,6 @@ public class BinderPanel extends JPanel {
             binderListModel.addElement(String.format("%s (%s) [%d/%d]", binder.getName(), type, binder.getCardCount(), Binder.MAX_CAPACITY));
         }
 
-        // Restore selection if possible
         if (selectedIndex >= 0 && selectedIndex < binderListModel.getSize()) {
             binderList.setSelectedIndex(selectedIndex);
         }
@@ -174,7 +172,6 @@ public class BinderPanel extends JPanel {
                 JOptionPane.showMessageDialog(mainFrame, "Binder '" + name + "' created successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
                 refreshView();
             } else {
-                // Backend prints a more specific error
                 JOptionPane.showMessageDialog(mainFrame, "Failed to create binder. Name may be blank or already in use.", "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
@@ -185,10 +182,10 @@ public class BinderPanel extends JPanel {
      */
     private void handleView() {
         String selectedValue = binderList.getSelectedValue();
-        if (selectedValue == null) return;
+        if (selectedValue == null)
+            return;
         
         String binderName = selectedValue.split(" \\(")[0];
-        // Tell the MainFrame to load and show the contents panel
         mainFrame.showBinderContents(binderName);
     }
 
@@ -197,7 +194,8 @@ public class BinderPanel extends JPanel {
      */
     private void handleDelete() {
         String selectedValue = binderList.getSelectedValue();
-        if (selectedValue == null) return;
+        if (selectedValue == null)
+            return;
 
         String binderName = selectedValue.split(" \\(")[0];
         int choice = JOptionPane.showConfirmDialog(
@@ -223,12 +221,14 @@ public class BinderPanel extends JPanel {
      */
     private void handleSell() {
         String selectedValue = binderList.getSelectedValue();
-        if (selectedValue == null) return;
+        if (selectedValue == null)
+            return;
 
         String binderName = selectedValue.split(" \\(")[0];
         Binder binder = inventory.findBinder(binderName);
 
-        if (binder == null) return; // Should not happen if selected
+        if (binder == null)
+            return;
 
         double price = binder.calculatePrice();
         int choice = JOptionPane.showConfirmDialog(

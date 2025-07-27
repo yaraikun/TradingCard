@@ -15,8 +15,9 @@ import java.util.HashMap;
 
 /**
  * A JPanel that displays the contents of a single, specific binder.
- * It provides the user interface for adding cards from the main collection into the binder,
- * removing cards from the binder, and initiating trades or setting prices.
+ * It provides the user interface for adding cards from the main collection
+ * into the binder, removing cards from the binder, and initiating trades or
+ * setting prices.
  */
 public class BinderContentsPanel extends JPanel {
     private final InventorySystem inventory;
@@ -117,34 +118,38 @@ public class BinderContentsPanel extends JPanel {
 
     public void loadBinder(String binderName) {
         this.currentBinder = inventory.findBinder(binderName);
+
         if (currentBinder == null) {
             JOptionPane.showMessageDialog(mainFrame, "Could not load binder. It may have been deleted.", "Error", JOptionPane.ERROR_MESSAGE);
             mainFrame.showPanel("binderPanel");
             return;
         }
+
         binderTitleLabel.setText("Managing: " + currentBinder.getName());
         refreshView();
     }
     
     private void refreshView() {
-        if (currentBinder == null) return;
+        if (currentBinder == null)
+            return;
         
         binderListModel.clear();
         ArrayList<Card> binderCards = currentBinder.getCards();
         binderCards.sort(Comparator.comparing(Card::getName));
-        for (Card card : binderCards) {
+
+        for (Card card : binderCards)
             binderListModel.addElement(card.getName());
-        }
 
         collectionListModel.clear();
         ArrayList<Card> collectionCards = inventory.getCardTypes();
         HashMap<String, Integer> counts = inventory.getCardCounts();
         collectionCards.sort(Comparator.comparing(Card::getName));
+
         for (Card card : collectionCards) {
             int count = counts.getOrDefault(card.getName().toLowerCase(), 0);
-            if (count > 0) {
+
+            if (count > 0)
                 collectionListModel.addElement(String.format("%s (Available: %d)", card.getName(), count));
-            }
         }
         
         JScrollPane binderScrollPane = (JScrollPane) binderCardList.getParent().getParent();
@@ -159,6 +164,7 @@ public class BinderContentsPanel extends JPanel {
 
     private void handleAddCard() {
         String selectedValue = collectionCardList.getSelectedValue();
+
         if (selectedValue == null) {
             JOptionPane.showMessageDialog(this, "Please select a card from the 'Available in Collection' list to add.", "No Selection", JOptionPane.WARNING_MESSAGE);
             return;
@@ -179,13 +185,14 @@ public class BinderContentsPanel extends JPanel {
 
     private void handleRemoveCard() {
         String selectedValue = binderCardList.getSelectedValue();
+
         if (selectedValue == null) {
             JOptionPane.showMessageDialog(this, "Please select a card from the 'Cards in Binder' list to remove.", "No Selection", JOptionPane.WARNING_MESSAGE);
             return;
         }
-        String cardName = selectedValue; // The list only contains names
 
-        // BUG FIX: Find the actual index in the original, unsorted list
+        String cardName = selectedValue;
+
         int originalIndex = -1;
         ArrayList<Card> originalCards = inventory.findBinder(currentBinder.getName()).getCards();
         for (int i = 0; i < originalCards.size(); i++) {
@@ -196,7 +203,6 @@ public class BinderContentsPanel extends JPanel {
         }
 
         if (originalIndex != -1 && inventory.removeCardFromBinder(originalIndex, currentBinder.getName())) {
-            // Success is silent, refresh will show the result
         } else {
             JOptionPane.showMessageDialog(this, "An error occurred while removing the card.", "Error", JOptionPane.ERROR_MESSAGE);
         }
@@ -211,7 +217,6 @@ public class BinderContentsPanel extends JPanel {
         }
         String selectedName = binderListModel.getElementAt(selectedViewIndex);
 
-        // BUG FIX: Find the actual index and Card object from the original list
         int outgoingCardIndex = -1;
         Card outgoingCard = null;
         ArrayList<Card> originalCards = inventory.findBinder(currentBinder.getName()).getCards();
@@ -228,7 +233,6 @@ public class BinderContentsPanel extends JPanel {
             return;
         }
 
-        // --- Build the custom dialog panel for trade input ---
         JPanel panel = new JPanel(new GridLayout(4, 2, 5, 5));
         JTextField nameField = new JTextField();
         JComboBox<Rarity> rarityComboBox = new JComboBox<>(Rarity.values());
@@ -239,7 +243,6 @@ public class BinderContentsPanel extends JPanel {
         panel.add(new JLabel("Variant:")); panel.add(variantComboBox);
         panel.add(new JLabel("Base Value ($):")); panel.add(valueField);
         
-        // BUG FIX: Add listener to enforce variant rule
         Runnable updateVariantState = () -> {
             Rarity selectedRarity = (Rarity) rarityComboBox.getSelectedItem();
             boolean isSpecial = selectedRarity == Rarity.RARE || selectedRarity == Rarity.LEGENDARY;
@@ -249,7 +252,7 @@ public class BinderContentsPanel extends JPanel {
             }
         };
         rarityComboBox.addActionListener(e -> updateVariantState.run());
-        updateVariantState.run(); // Set initial state
+        updateVariantState.run();
         
         int result = JOptionPane.showConfirmDialog(this, panel, "Enter Incoming Card Details", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
 
