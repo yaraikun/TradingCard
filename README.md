@@ -9,6 +9,7 @@
 config:
   layout: elk
   elk:
+    mergeEdges: false
     nodePlacementStrategy: LINEAR_SEGMENTS
   theme: redux
   look: neo
@@ -272,7 +273,6 @@ direction TB
 	    + calculatePrice() double
 	    + setPrice(price: double) boolean
     }
-
 	<<Facade>> InventorySystem
 	<<JFrame>> MainFrame
 	<<JPanel>> MainMenuPanel
@@ -287,11 +287,16 @@ direction TB
 	<<Abstract>> Binder
 	<<Abstract>> SellableBinder
 
+%% Controller Layer
 InventorySystem *-- "1" CollectionManager : has
 InventorySystem *-- "1" BinderManager : has
 InventorySystem *-- "1" DeckManager : has
+
+%% Backend Layer
 BinderManager ..> "1" CollectionManager : uses
 DeckManager ..> "1" CollectionManager : uses
+
+%% GUI Layer
 InventorySystem ..> "1" MainFrame : uses
 
 MainFrame *-- "1" MainMenuPanel : contains
@@ -314,9 +319,18 @@ BinderContentsPanel ..> "1" InventorySystem : uses
 DeckPanel ..> "1" InventorySystem : uses
 DeckContentsPanel ..> "1" InventorySystem : uses
 
-Card *-- "1" Rarity : has
-Card *-- "1" Variant : has
+%% GUI to Model Dependencies
+CollectionPanel ..> Card : displays
+CollectionPanel ..> Rarity : uses for creation
+CollectionPanel ..> Variant : uses for creation
+BinderPanel ..> Binder : displays
+DeckPanel ..> Deck : displays
+BinderContentsPanel ..> Card : displays and manipulates
+BinderContentsPanel ..> Rarity : uses for trade
+BinderContentsPanel ..> Variant : uses for trade
+DeckContentsPanel ..> Card : displays and manipulates
 
+%% Model Layer (Inheritance)
 Deck <|-- NormalDeck : extends
 Deck <|-- SellableDeck : extends
 Binder <|-- NonCuratedBinder : extends
@@ -326,11 +340,16 @@ SellableBinder <|-- PauperBinder : extends
 SellableBinder <|-- RaresBinder : extends
 SellableBinder <|-- LuxuryBinder : extends
 
+%% Model Layer (Composition and Aggregation)
+Card *-- "1" Rarity : has
+Card *-- "1" Variant : has
+
 CollectionManager o-- "0..*" Card : manages
 BinderManager o-- "0..*" Binder : manages
 DeckManager o-- "0..*" Deck : manages
+
 Binder o-- "0..20" Card : contains
-Deck o-- "0..10*" Card : contains
+Deck o-- "0..10" Card : contains
 ```
 
 ---
