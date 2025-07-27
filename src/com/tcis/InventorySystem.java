@@ -3,7 +3,7 @@ package com.tcis;
 import com.tcis.backend.BinderManager;
 import com.tcis.backend.CollectionManager;
 import com.tcis.backend.DeckManager;
-import com.tcis.gui.MainFrame;
+import com.tcis.gui.main.MainFrame;
 import com.tcis.models.binder.Binder;
 import com.tcis.models.card.Card;
 import com.tcis.models.card.Rarity;

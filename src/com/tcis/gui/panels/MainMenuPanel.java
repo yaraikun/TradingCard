@@ -1,6 +1,6 @@
-package com.tcis.gui;
+package com.tcis.gui.panels;
 
-import com.tcis.gui.MainFrame;
+import com.tcis.gui.main.MainFrame;
 import javax.swing.*;
 import java.awt.*;
 
@@ -10,11 +10,6 @@ import java.awt.*;
  * This panel is intended to be the default "card" in the MainFrame's CardLayout.
  */
 public class MainMenuPanel extends JPanel {
-
-    /**
-     * A reference to the MainFrame container. This is needed so that this panel's
-     * buttons can tell the MainFrame to switch to a different panel.
-     */
     private final MainFrame mainFrame;
 
     /**
@@ -27,9 +22,12 @@ public class MainMenuPanel extends JPanel {
         setLayout(new BorderLayout(10, 10));
         setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
-        // --- Center Panel for Main Action Buttons ---
-        JPanel buttonPanel = new JPanel(new GridLayout(3, 1, 15, 15));
+        JLabel titleLabel = new JLabel("Main Menu", SwingConstants.CENTER);
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 24));
+        add(titleLabel, BorderLayout.NORTH);
 
+        JPanel buttonPanel = new JPanel(new GridLayout(3, 1, 15, 15));
+        
         JButton manageCollectionBtn = new JButton("Manage Collection");
         manageCollectionBtn.setFont(new Font("Arial", Font.BOLD, 16));
 
@@ -43,11 +41,12 @@ public class MainMenuPanel extends JPanel {
         buttonPanel.add(manageBindersBtn);
         buttonPanel.add(manageDecksBtn);
 
-        add(buttonPanel, BorderLayout.CENTER);
+        // Add an inner panel to prevent buttons from stretching to fill the whole space
+        JPanel centerWrapper = new JPanel(new GridBagLayout());
+        centerWrapper.add(buttonPanel);
+        add(centerWrapper, BorderLayout.CENTER);
 
         // --- Action Listeners for Buttons ---
-
-        // When a button is clicked, it tells the MainFrame to show the corresponding panel.
         manageCollectionBtn.addActionListener(e -> mainFrame.showPanel("collectionPanel"));
         manageBindersBtn.addActionListener(e -> mainFrame.showPanel("binderPanel"));
         manageDecksBtn.addActionListener(e -> mainFrame.showPanel("deckPanel"));

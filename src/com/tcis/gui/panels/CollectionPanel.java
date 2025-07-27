@@ -1,11 +1,10 @@
-package com.tcis.gui;
+package com.tcis.gui.panels;
 
 import com.tcis.InventorySystem;
-import com.tcis.gui.MainFrame;
+import com.tcis.gui.main.MainFrame;
 import com.tcis.models.card.Card;
 import com.tcis.models.card.Rarity;
 import com.tcis.models.card.Variant;
-
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -42,19 +41,16 @@ public class CollectionPanel extends JPanel {
         setLayout(new BorderLayout(10, 10));
         setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        // --- Title ---
         JLabel titleLabel = new JLabel("Card Collection", SwingConstants.CENTER);
         titleLabel.setFont(new Font("Arial", Font.BOLD, 24));
         add(titleLabel, BorderLayout.NORTH);
 
-        // --- Center: Card List ---
         cardListModel = new DefaultListModel<>();
         cardList = new JList<>(cardListModel);
         cardList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         JScrollPane scrollPane = new JScrollPane(cardList);
         add(scrollPane, BorderLayout.CENTER);
 
-        // --- Right: Action Buttons ---
         JPanel actionButtonPanel = new JPanel();
         actionButtonPanel.setLayout(new BoxLayout(actionButtonPanel, BoxLayout.Y_AXIS));
         
@@ -82,29 +78,21 @@ public class CollectionPanel extends JPanel {
         actionButtonPanel.add(sellCardButton);
         add(actionButtonPanel, BorderLayout.EAST);
 
-        // --- Bottom: Back Button ---
         JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         JButton backButton = new JButton("Back to Main Menu");
         bottomPanel.add(backButton);
         add(bottomPanel, BorderLayout.SOUTH);
 
-        // --- Add Listeners ---
         cardList.addListSelectionListener(e -> updateButtonStates());
-
         backButton.addActionListener(e -> mainFrame.showPanel("mainMenu"));
         addCardButton.addActionListener(e -> handleAddCard());
         viewDetailsButton.addActionListener(e -> handleViewDetails());
         updateCountButton.addActionListener(e -> handleUpdateCount());
         sellCardButton.addActionListener(e -> handleSellCard());
 
-        // Initial State
         updateButtonStates();
     }
 
-    /**
-     * Public method to refresh the entire view. It re-fetches data from the
-     * backend and updates the UI components.
-     */
     public void refreshView() {
         cardListModel.clear();
         ArrayList<Card> cardTypes = inventory.getCardTypes();
@@ -119,9 +107,6 @@ public class CollectionPanel extends JPanel {
         updateButtonStates();
     }
     
-    /**
-     * Enables or disables action buttons based on the current list selection.
-     */
     private void updateButtonStates() {
         int selectedIndex = cardList.getSelectedIndex();
         boolean isSelected = selectedIndex != -1;
@@ -138,11 +123,7 @@ public class CollectionPanel extends JPanel {
         }
     }
 
-    /**
-     * Handles the workflow for adding a new card using a custom JOptionPane.
-     */
     private void handleAddCard() {
-        // Create the panel for the custom dialog
         JPanel panel = new JPanel(new GridLayout(4, 2, 5, 5));
         JTextField nameField = new JTextField();
         JComboBox<Rarity> rarityComboBox = new JComboBox<>(Rarity.values());
@@ -158,7 +139,6 @@ public class CollectionPanel extends JPanel {
         panel.add(new JLabel("Base Value ($):"));
         panel.add(valueField);
 
-        // Logic to enable/disable variant box
         Runnable updateVariantState = () -> {
             Rarity selectedRarity = (Rarity) rarityComboBox.getSelectedItem();
             variantComboBox.setEnabled(selectedRarity == Rarity.RARE || selectedRarity == Rarity.LEGENDARY);
@@ -167,7 +147,7 @@ public class CollectionPanel extends JPanel {
             }
         };
         rarityComboBox.addActionListener(e -> updateVariantState.run());
-        updateVariantState.run(); // Initial state
+        updateVariantState.run();
 
         int result = JOptionPane.showConfirmDialog(mainFrame, panel, "Add New Card",
                 JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
@@ -183,8 +163,7 @@ public class CollectionPanel extends JPanel {
                     JOptionPane.showMessageDialog(mainFrame, "Card '" + name + "' added successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
                     refreshView();
                 } else {
-                    // Backend prints specific error (e.g., duplicate, invalid name/value)
-                    JOptionPane.showMessageDialog(mainFrame, "Failed to add card. Check console for details.", "Error", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(mainFrame, "Failed to add card. Check name is unique and details are valid.", "Error", JOptionPane.ERROR_MESSAGE);
                 }
             } catch (NumberFormatException ex) {
                 JOptionPane.showMessageDialog(mainFrame, "Base value must be a valid number.", "Input Error", JOptionPane.ERROR_MESSAGE);
@@ -192,9 +171,6 @@ public class CollectionPanel extends JPanel {
         }
     }
 
-    /**
-     * Handles showing the details of the selected card.
-     */
     private void handleViewDetails() {
         String selectedValue = cardList.getSelectedValue();
         if (selectedValue == null) return;
@@ -212,9 +188,6 @@ public class CollectionPanel extends JPanel {
         }
     }
 
-    /**
-     * Handles the workflow for increasing or decreasing the count of the selected card.
-     */
     private void handleUpdateCount() {
         String selectedValue = cardList.getSelectedValue();
         if (selectedValue == null) return;
@@ -225,7 +198,7 @@ public class CollectionPanel extends JPanel {
         int action = JOptionPane.showOptionDialog(mainFrame, "Update count for '" + cardName + "'?",
                 "Update Card Count", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[2]);
 
-        if (action == 0 || action == 1) { // 0: Increase, 1: Decrease
+        if (action == 0 || action == 1) {
             String amountStr = JOptionPane.showInputDialog(mainFrame, "Enter amount:");
             if (amountStr != null) {
                 try {
@@ -250,9 +223,6 @@ public class CollectionPanel extends JPanel {
         }
     }
 
-    /**
-     * Handles the workflow for selling the selected card.
-     */
     private void handleSellCard() {
         String selectedValue = cardList.getSelectedValue();
         if (selectedValue == null) return;

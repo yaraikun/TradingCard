@@ -1,9 +1,8 @@
-package com.tcis.gui;
+package com.tcis.gui.panels;
 
 import com.tcis.InventorySystem;
-import com.tcis.gui.MainFrame;
+import com.tcis.gui.main.MainFrame;
 import com.tcis.models.binder.Binder;
-import com.tcis.models.card.Card;
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -30,7 +29,7 @@ public class BinderPanel extends JPanel {
 
     /**
      * Constructs the BinderPanel.
-     * @param mainFrame The main application window, used for navigation (switching panels).
+     * @param mainFrame The main application window for navigation.
      * @param inventory The backend facade for all application logic.
      */
     public BinderPanel(MainFrame mainFrame, InventorySystem inventory) {
@@ -49,20 +48,18 @@ public class BinderPanel extends JPanel {
         binderListModel = new DefaultListModel<>();
         binderList = new JList<>(binderListModel);
         binderList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        JScrollPane scrollPane = new JScrollPane(binderList);
-        add(scrollPane, BorderLayout.CENTER);
+        add(new JScrollPane(binderList), BorderLayout.CENTER);
 
         // --- Right: Action Buttons ---
         JPanel actionButtonPanel = new JPanel();
         actionButtonPanel.setLayout(new BoxLayout(actionButtonPanel, BoxLayout.Y_AXIS));
         
         JButton createBtn = new JButton("Create Binder...");
-        viewButton = new JButton("View Contents...");
+        viewButton = new JButton("View/Manage Contents...");
         sellButton = new JButton("Sell Binder...");
         deleteButton = new JButton("Delete Binder...");
 
-        // Ensure all buttons have the same width for a clean look
-        Dimension buttonSize = new Dimension(180, 40);
+        Dimension buttonSize = new Dimension(200, 40);
         createBtn.setPreferredSize(buttonSize);
         viewButton.setPreferredSize(buttonSize);
         sellButton.setPreferredSize(buttonSize);
@@ -71,7 +68,12 @@ public class BinderPanel extends JPanel {
         viewButton.setMaximumSize(buttonSize);
         sellButton.setMaximumSize(buttonSize);
         deleteButton.setMaximumSize(buttonSize);
+        createBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
+        viewButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        sellButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        deleteButton.setAlignmentX(Component.CENTER_ALIGNMENT);
 
+        actionButtonPanel.add(Box.createVerticalGlue());
         actionButtonPanel.add(createBtn);
         actionButtonPanel.add(Box.createRigidArea(new Dimension(0, 10)));
         actionButtonPanel.add(viewButton);
@@ -79,7 +81,11 @@ public class BinderPanel extends JPanel {
         actionButtonPanel.add(sellButton);
         actionButtonPanel.add(Box.createRigidArea(new Dimension(0, 10)));
         actionButtonPanel.add(deleteButton);
-        add(actionButtonPanel, BorderLayout.EAST);
+        actionButtonPanel.add(Box.createVerticalGlue());
+        
+        JPanel actionWrapperPanel = new JPanel(new BorderLayout());
+        actionWrapperPanel.add(actionButtonPanel, BorderLayout.CENTER);
+        add(actionWrapperPanel, BorderLayout.EAST);
 
         // --- Bottom: Back Button ---
         JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
@@ -89,14 +95,12 @@ public class BinderPanel extends JPanel {
 
         // --- Add Listeners ---
         binderList.addListSelectionListener(e -> updateButtonStates());
-        
         backButton.addActionListener(e -> mainFrame.showPanel("mainMenu"));
         createBtn.addActionListener(e -> handleCreate());
         viewButton.addActionListener(e -> handleView());
         deleteButton.addActionListener(e -> handleDelete());
         sellButton.addActionListener(e -> handleSell());
         
-        // Initial State
         updateButtonStates();
     }
 
@@ -106,6 +110,9 @@ public class BinderPanel extends JPanel {
      * MainFrame whenever this panel is shown.
      */
     public void refreshView() {
+        // Save the currently selected index
+        int selectedIndex = binderList.getSelectedIndex();
+
         binderListModel.clear();
         ArrayList<Binder> binders = inventory.getBinders();
         binders.sort(Comparator.comparing(Binder::getName));
@@ -113,12 +120,17 @@ public class BinderPanel extends JPanel {
             String type = binder.getClass().getSimpleName().replace("Binder", "");
             binderListModel.addElement(String.format("%s (%s) [%d/%d]", binder.getName(), type, binder.getCardCount(), Binder.MAX_CAPACITY));
         }
+
+        // Restore selection if possible
+        if (selectedIndex >= 0 && selectedIndex < binderListModel.getSize()) {
+            binderList.setSelectedIndex(selectedIndex);
+        }
+
         updateButtonStates();
     }
 
     /**
-     * Enables or disables action buttons based on the current list selection.
-     * This provides a responsive and intuitive user experience.
+     * Enables or disables action buttons based on the current list selection and binder properties.
      */
     private void updateButtonStates() {
         int selectedIndex = binderList.getSelectedIndex();
@@ -163,37 +175,21 @@ public class BinderPanel extends JPanel {
                 refreshView();
             } else {
                 // Backend prints a more specific error
-                JOptionPane.showMessageDialog(mainFrame, "Failed to create binder.", "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(mainFrame, "Failed to create binder. Name may be blank or already in use.", "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
     }
 
     /**
-     * Handles opening a dialog to view/manage the contents of the selected binder.
+     * Handles navigating to the BinderContentsPanel for the selected binder.
      */
     private void handleView() {
         String selectedValue = binderList.getSelectedValue();
-        if (selectedValue == null) return; // Should be prevented by button state, but good practice
-
+        if (selectedValue == null) return;
+        
         String binderName = selectedValue.split(" \\(")[0];
-        // For complex views, a dedicated JDialog is still appropriate.
-        // BinderContentsDialog contentsDialog = new BinderContentsDialog(mainFrame, inventory, binderName);
-        // contentsDialog.setVisible(true);
-        // For simplicity as requested, we can use a JOptionPane here.
-        Binder binder = inventory.findBinder(binderName);
-        if (binder != null) {
-             ArrayList<Card> cards = binder.getCards();
-             cards.sort(Comparator.comparing(Card::getName));
-             StringBuilder content = new StringBuilder();
-             if (cards.isEmpty()){
-                 content.append("This binder is empty.");
-             } else {
-                 for(Card card : cards){
-                     content.append("- ").append(card.getName()).append("\n");
-                 }
-             }
-             JOptionPane.showMessageDialog(mainFrame, content.toString(), "Contents of " + binder.getName(), JOptionPane.INFORMATION_MESSAGE);
-        }
+        // Tell the MainFrame to load and show the contents panel
+        mainFrame.showBinderContents(binderName);
     }
 
     /**
@@ -232,7 +228,7 @@ public class BinderPanel extends JPanel {
         String binderName = selectedValue.split(" \\(")[0];
         Binder binder = inventory.findBinder(binderName);
 
-        if (binder == null) return; // Should not happen
+        if (binder == null) return; // Should not happen if selected
 
         double price = binder.calculatePrice();
         int choice = JOptionPane.showConfirmDialog(

@@ -1,16 +1,13 @@
-package com.tcis.gui;
+package com.tcis.gui.panels;
 
 import com.tcis.InventorySystem;
-import com.tcis.gui.MainFrame;
+import com.tcis.gui.main.MainFrame;
 import com.tcis.models.card.Card;
 import com.tcis.models.deck.Deck;
 
 import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Comparator;
 
@@ -41,19 +38,16 @@ public class DeckPanel extends JPanel {
         setLayout(new BorderLayout(10, 10));
         setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        // --- Title ---
         JLabel titleLabel = new JLabel("Deck Management", SwingConstants.CENTER);
         titleLabel.setFont(new Font("Arial", Font.BOLD, 24));
         add(titleLabel, BorderLayout.NORTH);
 
-        // --- Center: Deck List ---
         deckListModel = new DefaultListModel<>();
         deckList = new JList<>(deckListModel);
         deckList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         JScrollPane scrollPane = new JScrollPane(deckList);
         add(scrollPane, BorderLayout.CENTER);
 
-        // --- Right: Action Buttons ---
         JPanel actionButtonPanel = new JPanel();
         actionButtonPanel.setLayout(new BoxLayout(actionButtonPanel, BoxLayout.Y_AXIS));
 
@@ -71,7 +65,12 @@ public class DeckPanel extends JPanel {
         viewButton.setMaximumSize(buttonSize);
         sellButton.setMaximumSize(buttonSize);
         deleteButton.setMaximumSize(buttonSize);
-
+        createBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
+        viewButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        sellButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        deleteButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        
+        actionButtonPanel.add(Box.createVerticalGlue());
         actionButtonPanel.add(createBtn);
         actionButtonPanel.add(Box.createRigidArea(new Dimension(0, 10)));
         actionButtonPanel.add(viewButton);
@@ -79,24 +78,24 @@ public class DeckPanel extends JPanel {
         actionButtonPanel.add(sellButton);
         actionButtonPanel.add(Box.createRigidArea(new Dimension(0, 10)));
         actionButtonPanel.add(deleteButton);
-        add(actionButtonPanel, BorderLayout.EAST);
+        actionButtonPanel.add(Box.createVerticalGlue());
+        
+        JPanel actionWrapperPanel = new JPanel(new BorderLayout());
+        actionWrapperPanel.add(actionButtonPanel, BorderLayout.CENTER);
+        add(actionWrapperPanel, BorderLayout.EAST);
 
-        // --- Bottom: Back Button ---
         JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         JButton backButton = new JButton("Back to Main Menu");
         bottomPanel.add(backButton);
         add(bottomPanel, BorderLayout.SOUTH);
 
-        // --- Add Listeners ---
         deckList.addListSelectionListener(e -> updateButtonStates());
-
         backButton.addActionListener(e -> mainFrame.showPanel("mainMenu"));
         createBtn.addActionListener(e -> handleCreate());
         viewButton.addActionListener(e -> handleView());
         deleteButton.addActionListener(e -> handleDelete());
         sellButton.addActionListener(e -> handleSell());
 
-        // Initial State
         updateButtonStates();
     }
 
@@ -105,12 +104,16 @@ public class DeckPanel extends JPanel {
      * backend and updates the UI components.
      */
     public void refreshView() {
+        int selectedIndex = deckList.getSelectedIndex();
         deckListModel.clear();
         ArrayList<Deck> decks = inventory.getDecks();
         decks.sort(Comparator.comparing(Deck::getName));
         for (Deck deck : decks) {
             String type = deck.isSellable() ? "Sellable" : "Normal";
             deckListModel.addElement(String.format("%s (%s) [%d/%d]", deck.getName(), type, deck.getCardCount(), Deck.MAX_CAPACITY));
+        }
+        if (selectedIndex >= 0 && selectedIndex < deckListModel.getSize()) {
+            deckList.setSelectedIndex(selectedIndex);
         }
         updateButtonStates();
     }
@@ -166,29 +169,14 @@ public class DeckPanel extends JPanel {
     }
 
     /**
-     * Handles opening a simple dialog to view the contents of the selected deck.
+     * Handles navigating to the DeckContentsPanel for the selected deck.
      */
     private void handleView() {
         String selectedValue = deckList.getSelectedValue();
         if (selectedValue == null) return;
 
         String deckName = selectedValue.split(" \\(")[0];
-        Deck deck = inventory.findDeck(deckName);
-        if (deck != null) {
-            ArrayList<Card> cards = deck.getCards();
-            cards.sort(Comparator.comparing(Card::getName));
-            StringBuilder content = new StringBuilder();
-            if (cards.isEmpty()){
-                content.append("This deck is empty.");
-            } else {
-                for(Card card : cards){
-                    content.append("- ").append(card.getName()).append("\n");
-                }
-            }
-            // A dedicated DeckContentsDialog would be better for complex interactions,
-            // but JOptionPane is sufficient for a simple view.
-            JOptionPane.showMessageDialog(mainFrame, new JScrollPane(new JTextArea(content.toString())), "Contents of " + deck.getName(), JOptionPane.INFORMATION_MESSAGE);
-        }
+        mainFrame.showDeckContents(deckName);
     }
 
     /**
