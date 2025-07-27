@@ -5,11 +5,9 @@ import com.tcis.models.card.Card;
 import java.util.ArrayList;
 
 /**
- * Manages the lifecycle and contents of all Binder objects.
  * This class handles the logic for creating, deleting, and modifying different
  * types of binders, and orchestrates the movement of cards between binders and
- * the main collection based on the new MCO2 rules. It leverages polymorphism
- * to handle different binder types seamlessly.
+ * the main collection.
  */
 public class BinderManager {
     /**
@@ -102,7 +100,8 @@ public class BinderManager {
     
     /**
      * Deletes a binder and returns all its cards to the main collection.
-     * This action is for when a user simply wants to remove a binder, not sell it.
+     * This action is for when a user simply wants to remove a binder, not
+     * sell it.
      * @param name The name of the binder to delete.
      * @return true if the binder was found and deleted, false otherwise.
      */
@@ -179,7 +178,8 @@ public class BinderManager {
     }
 
     /**
-     * Removes a card from a binder at a specific index and returns it to the main collection.
+     * Removes a card from a binder at a specific index and returns it to the
+     * main collection.
      * @param cardIndex The index of the card to remove from the binder's list.
      * @param binderName The name of the binder.
      * @return true if the removal was successful, false otherwise.
@@ -203,7 +203,8 @@ public class BinderManager {
      * is removed permanently, and the incoming card is added to the binder.
      * @param binderName The name of the binder where the trade occurs.
      * @param outgoingCardIndex The index of the card being given up.
-     * @param incomingCard The new Card object being received. Must be a valid, pre-constructed card.
+     * @param incomingCard The new Card object being received. Must be a valid,
+     *                     pre-constructed card.
      * @return true if the trade was successful, false otherwise.
      */
     public boolean performTrade(String binderName, int outgoingCardIndex, Card incomingCard) {

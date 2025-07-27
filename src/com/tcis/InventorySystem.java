@@ -13,11 +13,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
- * Acts as a Facade for the entire backend system and the main controller for the application.
- * The GUI layer interacts exclusively with this class, which then delegates
- * requests to the appropriate manager (CollectionManager, BinderManager, DeckManager).
- * This decouples the UI from the backend's internal implementation and manages the application's overall state,
- * such as the player's total money.
+ * Acts as a Facade for the entire backend system and the main controller for
+ * the application. The GUI layer interacts exclusively with this class, which
+ * then delegates requests to the appropriate manager (CollectionManager,
+ * BinderManager, DeckManager).
  */
 public class InventorySystem {
     private double totalMoney;
@@ -26,7 +25,8 @@ public class InventorySystem {
     private final DeckManager deckManager;
 
     /**
-     * Constructs the InventorySystem, initializing all backend components and setting the initial money to zero.
+     * Constructs the InventorySystem, initializing all backend components and
+     * setting the initial money to zero.
      */
     public InventorySystem() {
         this.totalMoney = 0.0;
@@ -41,13 +41,11 @@ public class InventorySystem {
      * called from the Main class.
      */
     public void run() {
-        // Create the single JFrame for the application and make it visible.
         MainFrame mainFrame = new MainFrame(this);
         mainFrame.setVisible(true);
     }
 
     /**
-
      * Gets the current total money of the player.
      * @return a double representing the player's total money.
      */
@@ -67,6 +65,7 @@ public class InventorySystem {
             this.totalMoney += card.getCalculatedValue();
             return true;
         }
+
         return false;
     }
 
@@ -82,6 +81,7 @@ public class InventorySystem {
             this.totalMoney += price;
             return true;
         }
+
         return false;
     }
 
@@ -100,8 +100,7 @@ public class InventorySystem {
         return false;
     }
 
-    // --- Delegation Methods ---
-    // The following methods act as a clean pass-through to the appropriate manager,
+    // The following methods act as a gateway to the appropriate manager,
     // hiding the backend complexity from the GUI.
 
     public boolean createBinder(String name, String type) { return binderManager.createBinder(name, type); }
