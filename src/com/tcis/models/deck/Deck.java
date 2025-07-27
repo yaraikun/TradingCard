@@ -1,14 +1,17 @@
 package com.tcis.models.deck;
 
-import com.tcis.models.card.Card;
 import java.util.ArrayList;
+
+import com.tcis.models.card.Card;
 
 /**
  * An abstract superclass representing the fundamental properties and behaviors
- * of a deck. It enforces a maximum capacity and ensures that all cards within
- * it are unique by name. It defines an abstract method, {@code isSellable()},
- * which must be implemented by concrete subclasses to specify their selling
- * behavior.
+ * of a deck.
+ *
+ * <p>It enforces a maximum capacity and ensures that all cards within it are
+ * unique by name. It defines an abstract method, {@code isSellable()}, which
+ * must be implemented by concrete subclasses to specify their selling
+ * behavior.</p>
  */
 public abstract class Deck {
     /**
@@ -30,14 +33,17 @@ public abstract class Deck {
     protected final ArrayList<Card> cards;
 
     /**
-     * Constructs a new Deck, validating the name.
-     * This constructor is called by subclasses.
+     * Constructs a new Deck, validating the name. This constructor is called
+     * by subclasses.
+     *
      * @param name The name for the deck. Cannot be null or blank.
      * @throws IllegalArgumentException if the name is invalid.
      */
     public Deck(String name) {
         if (name == null || name.trim().isEmpty())
-            throw new IllegalArgumentException("Deck name cannot be null or blank.");
+            throw new IllegalArgumentException(
+                "Deck name cannot be null or blank."
+            );
 
         this.name = name.trim();
         this.cards = new ArrayList<>();
@@ -45,6 +51,7 @@ public abstract class Deck {
 
     /**
      * Gets the name of the deck.
+     *
      * @return The non-null, trimmed name of the deck.
      */
     public String getName() {
@@ -54,6 +61,7 @@ public abstract class Deck {
     /**
      * Returns a defensive copy of the list of cards in this deck to protect
      * the internal state.
+     *
      * @return A new ArrayList containing the cards currently in this deck.
      */
     public ArrayList<Card> getCards() {
@@ -62,6 +70,7 @@ public abstract class Deck {
 
     /**
      * Gets the current number of cards in the deck.
+     *
      * @return The integer count of cards.
      */
     public int getCardCount() {
@@ -70,17 +79,18 @@ public abstract class Deck {
 
     /**
      * Checks if the deck has reached its maximum capacity.
+     *
      * @return true if the number of cards is equal to or greater than
-     * MAX_CAPACITY, false otherwise.
+     *         MAX_CAPACITY, false otherwise.
      */
     public boolean isFull() {
         return this.cards.size() >= MAX_CAPACITY;
     }
 
     /**
-
      * Checks if a card with the given name is already in the deck
      * (case-insensitive).
+     *
      * @param cardName The name of the card to check.
      * @return true if a card with that name exists, false otherwise.
      */
@@ -95,6 +105,7 @@ public abstract class Deck {
     /**
      * Adds a card to the deck if it is not full and does not already contain a
      * card with the same name.
+     *
      * @param card The Card object to add.
      * @return true if the card was successfully added, false otherwise.
      */
@@ -109,9 +120,10 @@ public abstract class Deck {
 
     /**
      * Removes a card from a specific index in the deck.
+     *
      * @param index The zero-based index of the card to remove.
      * @return The removed Card object if the index was valid, or null if the
-     * index was out of bounds.
+     *         index was out of bounds.
      */
     public Card removeCard(int index) {
         if (index >= 0 && index < this.cards.size())
@@ -123,6 +135,7 @@ public abstract class Deck {
     /**
      * An abstract method that must be implemented by subclasses to define
      * whether the deck can be sold as a whole.
+     *
      * @return true if the deck is sellable, false otherwise.
      */
     public abstract boolean isSellable();
