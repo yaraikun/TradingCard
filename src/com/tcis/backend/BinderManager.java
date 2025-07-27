@@ -1,13 +1,17 @@
 package com.tcis.backend;
 
-import com.tcis.models.binder.*;
-import com.tcis.models.card.Card;
 import java.util.ArrayList;
 
+import com.tcis.models.binder.*;
+import com.tcis.models.card.Card;
+
 /**
- * This class handles the logic for creating, deleting, and modifying different
- * types of binders, and orchestrates the movement of cards between binders and
- * the main collection.
+ * Manages the lifecycle and contents of all Binder objects.
+ *
+ * <p>This class handles the logic for creating, deleting, and modifying
+ * different types of binders, and orchestrates the movement of cards between
+ * binders and the main collection based on MCO2 rules. It leverages
+ * polymorphism to handle different binder types seamlessly.</p>
  */
 public class BinderManager {
     /**
@@ -25,6 +29,7 @@ public class BinderManager {
 
     /**
      * Constructs a new BinderManager.
+     *
      * @param collectionManager The central CollectionManager that this manager
      *                          will depend on for all card inventory
      *                          operations.
@@ -36,6 +41,7 @@ public class BinderManager {
 
     /**
      * Finds a binder by its name (case-insensitive).
+     *
      * @param name The name of the binder to find.
      * @return The Binder object if found, otherwise null.
      */
@@ -52,9 +58,11 @@ public class BinderManager {
 
     /**
      * Creates a new binder of a specific type.
-     * This method acts as a factory, instantiating the correct Binder subclass
-     * based on user input. Fails if a binder with the same name already
-     * exists.
+     *
+     * <p>This method acts as a factory, instantiating the correct Binder
+     * subclass based on user input. Fails if a binder with the same name
+     * already exists.</p>
+     *
      * @param name The name for the new binder.
      * @param type The string representing the type of binder to create
      *             (e.g., "Pauper", "Collector").
@@ -102,6 +110,7 @@ public class BinderManager {
      * Deletes a binder and returns all its cards to the main collection.
      * This action is for when a user simply wants to remove a binder, not
      * sell it.
+     *
      * @param name The name of the binder to delete.
      * @return true if the binder was found and deleted, false otherwise.
      */
@@ -120,8 +129,13 @@ public class BinderManager {
     }
 
     /**
-     * Sells a binder if it is sellable. When sold, the binder and all cards
-     * within it are permanently removed from the system.
+     * Sells a binder if it is sellable.
+     *
+     * <p>When sold, the binder and all cards within it are permanently removed
+     * from the system. This method relies on polymorphism to call the correct
+     * {@code isSellable()} and {@code calculatePrice()} methods of the
+     * specific binder subclass.</p>
+     *
      * @param name The name of the binder to sell.
      * @return The calculated sale price of the binder if sold successfully.
      *         Returns a value <= 0 on failure (e.g., binder not found or not
@@ -136,7 +150,8 @@ public class BinderManager {
         }
 
         if (!binderToSell.isSellable()) {
-            System.out.println("Error: This binder type ('" + binderToSell.getClass().getSimpleName() + "') cannot be sold.");
+            System.out.println("Error: This binder type ('" +
+                binderToSell.getClass().getSimpleName() + "') cannot be sold.");
             return 0.0;
         }
 
@@ -149,6 +164,7 @@ public class BinderManager {
     /**
      * Moves a card from the main collection to a specified binder, respecting
      * the binder's specific rules.
+     *
      * @param cardName The name of the card to move.
      * @param binderName The name of the target binder.
      * @return An integer status code: 0 for success, 1 for card/binder not
@@ -166,20 +182,20 @@ public class BinderManager {
             return 2;
         
         if (!binder.addCard(card)) {
-            if (binder.isFull()) {
+            if (binder.isFull())
                 return 3;
-            } else {
+            else
                 return 4;
-            }
         }
 
         collectionManager.decreaseCount(card.getName(), 1);
-        return 0; // Success
+        return 0;
     }
 
     /**
      * Removes a card from a binder at a specific index and returns it to the
      * main collection.
+     *
      * @param cardIndex The index of the card to remove from the binder's list.
      * @param binderName The name of the binder.
      * @return true if the removal was successful, false otherwise.
@@ -199,26 +215,35 @@ public class BinderManager {
     }
 
     /**
-     * Executes a 1-for-1 card trade if the binder type allows it. The outgoing card
-     * is removed permanently, and the incoming card is added to the binder.
+     * Executes a 1-for-1 card trade if the binder type allows it.
+     *
+     * <p>The outgoing card is removed permanently, and the incoming card is
+     * added to the binder. This method uses polymorphism to check the trade
+     * and add eligibility rules of the specific binder subclass.</p>
+     *
      * @param binderName The name of the binder where the trade occurs.
      * @param outgoingCardIndex The index of the card being given up.
      * @param incomingCard The new Card object being received. Must be a valid,
      *                     pre-constructed card.
      * @return true if the trade was successful, false otherwise.
      */
-    public boolean performTrade(String binderName, int outgoingCardIndex, Card incomingCard) {
+    public boolean performTrade(String binderName,
+                                int outgoingCardIndex,
+                                Card incomingCard) {
         Binder binder = findBinder(binderName);
         if (binder == null || incomingCard == null)
             return false;
 
         if (!binder.canTrade()) {
-            System.out.println("Error: Cards cannot be traded from this type of binder.");
+            System.out.println(
+                "Error: Cards cannot be traded from this type of binder.");
             return false;
         }
 
         if (!binder.canAddCard(incomingCard)) {
-             System.out.println("Error: The incoming card does not meet the requirements for this binder.");
+             System.out.println(
+                "Error: The incoming card does not meet the requirements " +
+                "for this binder.");
             return false;
         }
 
@@ -227,7 +252,9 @@ public class BinderManager {
             return false;
 
         if (collectionManager.findCard(incomingCard.getName()) == null) {
-            collectionManager.addNewCard(incomingCard.getName(), incomingCard.getBaseValue(), incomingCard.getRarity(), incomingCard.getVariant());
+            collectionManager.addNewCard(
+                incomingCard.getName(), incomingCard.getBaseValue(),
+                incomingCard.getRarity(), incomingCard.getVariant());
             collectionManager.decreaseCount(incomingCard.getName(), 1);
         }
         
@@ -237,6 +264,7 @@ public class BinderManager {
 
     /**
      * Gets a defensive copy of the list of all binders.
+     *
      * @return A new ArrayList containing all Binder objects.
      */
     public ArrayList<Binder> getBinders() {
