@@ -40,12 +40,43 @@ import com.tcis.models.card.Variant;
  * </p>
  */
 public class CollectionPanel extends JPanel {
+    /**
+     * A reference to the backend facade, used to perform all collection-related
+     * business logic.
+     */
     private final InventorySystem inventory;
+
+    /**
+     * A reference to the main application window, used for navigation and for
+     * updating the global money display.
+     */
     private final MainFrame mainFrame;
+
+    /**
+     * The data model for the JList that displays the list of all unique card
+     * types in the collection.
+     */
     private DefaultListModel<String> cardListModel;
+
+    /**
+     * The Swing component that visually displays the list of all cards in the
+     * collection.
+     */
     private JList<String> cardList;
+
+    /**
+     * The button used to sell a single copy of the selected card.
+     */
     private JButton sellCardButton;
+
+    /**
+     * The button used to increase or decrease the quantity of the selected card.
+     */
     private JButton updateCountButton;
+
+    /**
+     * The button used to view the detailed attributes of the selected card.
+     */
     private JButton viewDetailsButton;
 
     /**

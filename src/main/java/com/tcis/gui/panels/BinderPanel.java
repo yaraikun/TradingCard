@@ -38,12 +38,42 @@ import com.tcis.models.binder.Binder;
  * </p>
  */
 public class BinderPanel extends JPanel {
+    /**
+     * A reference to the backend facade, used to perform all binder-related
+     * business logic.
+     */
     private final InventorySystem inventory;
+
+    /**
+     * A reference to the main application window, used for navigating to other
+     * panels like the binder contents view.
+     */
     private final MainFrame mainFrame;
+
+    /**
+     * The data model for the JList that displays the list of all created binders.
+     */
     private DefaultListModel<String> binderListModel;
+
+    /**
+     * The Swing component that visually displays the list of all created binders.
+     */
     private JList<String> binderList;
+
+    /**
+     * The button used to navigate to the detailed contents view of a selected binder.
+     */
     private JButton viewButton;
+
+    /**
+     * The button used to sell a selected binder. Its state is updated based on
+     * the selected binder's properties.
+     */
     private JButton sellButton;
+
+    /**
+     * The button used to delete a selected binder.
+     */
     private JButton deleteButton;
 
     /**

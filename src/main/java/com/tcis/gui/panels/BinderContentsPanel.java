@@ -43,17 +43,65 @@ import com.tcis.models.card.Variant;
  * </p>
  */
 public class BinderContentsPanel extends JPanel {
+    /**
+     * A reference to the backend facade, used to perform all data
+     * manipulation and retrieval operations.
+     */
     private final InventorySystem inventory;
+
+    /**
+     * A reference to the main application window, used for navigating back to
+     * other panels.
+     */
     private final MainFrame mainFrame;
+
+    /**
+     * The specific Binder object currently being viewed and managed by this
+     * panel. This is set by the {@code loadBinder} method.
+     */
     private Binder currentBinder;
 
+    /**
+     * The data model for the JList that displays the cards contained within
+     * the {@code currentBinder}.
+     */
     private DefaultListModel<String> binderListModel;
+
+    /**
+     * The Swing component that visually displays the list of cards in the
+     * current binder.
+     */
     private JList<String> binderCardList;
+
+    /**
+     * The data model for the JList that displays the cards available in the
+     * main collection.
+     */
     private DefaultListModel<String> collectionListModel;
+
+    /**
+     * The Swing component that visually displays the list of cards available
+     * in the main collection.
+     */
     private JList<String> collectionCardList;
 
+    /**
+
+     * The button used to initiate a trade for a card selected from the binder.
+     * Its state is updated based on the binder's properties.
+     */
     private JButton tradeButton;
+
+    /**
+     * The button used to set a custom price. This is only enabled if the
+     * {@code currentBinder} is a LuxuryBinder.
+     */
     private JButton setPriceButton;
+
+    /**
+     * The label at the top of the panel that displays the name of the binder
+     * currently being managed.
+     */
     private JLabel binderTitleLabel;
 
     /**

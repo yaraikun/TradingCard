@@ -51,12 +51,34 @@ public class MainFrame extends JFrame {
      */
     private JLabel totalMoneyLabel;
 
-    // Panel instances are stored as attributes for easy access and management.
+    /**
+     * The panel that displays the main menu and primary navigation options.
+     */
     private MainMenuPanel mainMenuPanel;
+
+    /**
+     * The panel for viewing and managing the entire card collection.
+     */
     private CollectionPanel collectionPanel;
+
+    /**
+     * The panel for managing the list of binders (create, delete, sell).
+     */
     private BinderPanel binderPanel;
+
+    /**
+     * The panel for managing the list of decks (create, delete, sell).
+     */
     private DeckPanel deckPanel;
+
+    /**
+     * The panel for managing the contents of a single, selected binder.
+     */
     private BinderContentsPanel binderContentsPanel;
+
+    /**
+     * The panel for managing the contents of a single, selected deck.
+     */
     private DeckContentsPanel deckContentsPanel;
 
     /**

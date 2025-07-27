@@ -148,8 +148,9 @@ public class BinderManager {
      *
      * @param name The name of the binder to sell.
      * @return The calculated sale price of the binder if sold successfully.
-     *         Returns a value <= 0 on failure (e.g., binder not found or not
-     *         sellable), which the calling method should check for.
+     *         Returns a value less than or equal to 0 on failure (e.g., binder
+     *         not found or not sellable), which the calling method should check 
+     *         for.
      */
     public double sellBinder(String name) {
         Binder binderToSell = findBinder(name);

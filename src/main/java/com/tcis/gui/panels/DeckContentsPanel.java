@@ -38,15 +38,53 @@ import com.tcis.models.deck.Deck;
  * </p>
  */
 public class DeckContentsPanel extends JPanel {
+    /**
+     * A reference to the backend facade, used to perform all deck and card
+     * related business logic.
+     */
     private final InventorySystem inventory;
+
+    /**
+     * A reference to the main application window, used for navigating back to
+     * other panels.
+     */
     private final MainFrame mainFrame;
+
+    /**
+     * The specific Deck object currently being viewed and managed by this
+     * panel. This is set by the {@code loadDeck} method.
+     */
     private Deck currentDeck;
 
+    /**
+     * The data model for the JList that displays the cards contained within
+     * the {@code currentDeck}.
+     */
     private DefaultListModel<String> deckListModel;
+
+    /**
+     * The Swing component that visually displays the list of cards in the
+     * current deck.
+     */
     private JList<String> deckCardList;
+
+    /**
+     * The data model for the JList that displays the cards available in the
+     * main collection.
+     */
     private DefaultListModel<String> collectionListModel;
+
+    /**
+     * The Swing component that visually displays the list of cards available
+     * in the main collection.
+     */
     private JList<String> collectionCardList;
 
+    /**
+
+     * The label at the top of the panel that displays the name of the deck
+     * currently being managed.
+     */
     private JLabel deckTitleLabel;
 
     /**

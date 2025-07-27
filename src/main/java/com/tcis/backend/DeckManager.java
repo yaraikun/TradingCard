@@ -127,7 +127,7 @@ public class DeckManager {
      *
      * @param name The name of the deck to sell.
      * @return The calculated sale price if sold successfully. Returns a value
-     *         <= 0 on failure.
+     *         less than or equal to 0 on failure.
      */
     public double sellDeck(String name) {
         Deck deckToSell = findDeck(name);

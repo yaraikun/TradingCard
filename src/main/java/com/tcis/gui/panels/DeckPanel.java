@@ -39,12 +39,42 @@ import com.tcis.models.deck.Deck;
  * </p>
  */
 public class DeckPanel extends JPanel {
+    /**
+     * A reference to the backend facade, used to perform all deck-related
+     * business logic.
+     */
     private final InventorySystem inventory;
+
+    /**
+     * A reference to the main application window, used for navigating to other
+     * panels.
+     */
     private final MainFrame mainFrame;
+
+    /**
+     * The data model for the JList that displays the list of all created decks.
+     */
     private DefaultListModel<String> deckListModel;
+
+    /**
+     * The Swing component that visually displays the list of all created decks.
+     */
     private JList<String> deckList;
+
+    /**
+     * The button used to navigate to the detailed contents view of a selected deck.
+     */
     private JButton viewButton;
+
+    /**
+     * The button used to sell a selected deck. Its state is updated based on
+     * the selected deck's properties.
+     */
     private JButton sellButton;
+
+    /**
+     * The button used to delete a selected deck.
+     */
     private JButton deleteButton;
 
     /**
