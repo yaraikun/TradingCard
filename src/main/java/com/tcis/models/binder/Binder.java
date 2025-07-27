@@ -8,10 +8,12 @@ import com.tcis.models.card.Card;
  * An abstract superclass representing the fundamental structure and behavior
  * of a binder.
  *
- * <p>It provides common functionality like storing cards, checking capacity,
+ * <p>
+ * It provides common functionality like storing cards, checking capacity,
  * and adding/removing cards. It defines several abstract methods that must be
  * implemented by concrete subclasses to enforce specific rules regarding card
- * eligibility, sellability, trading, and price calculation.</p>
+ * eligibility, sellability, trading, and price calculation.
+ * </p>
  */
 public abstract class Binder {
     /**
@@ -88,9 +90,11 @@ public abstract class Binder {
     /**
      * Attempts to add a card to the binder.
      *
-     * <p>This method uses the Template Method pattern: it calls the abstract
+     * <p>
+     * This method uses the Template Method pattern: it calls the abstract
      * {@code canAddCard} method, which is defined by subclasses, to determine
-     * if the card is allowed before adding it.</p>
+     * if the card is allowed before adding it.
+     * </p>
      *
      * @param card The Card object to add.
      * @return true if the card was successfully added, false if the binder was
@@ -101,6 +105,7 @@ public abstract class Binder {
             this.cards.add(card);
             return true;
         }
+
         return false;
     }
 

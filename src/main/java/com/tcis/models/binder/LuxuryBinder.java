@@ -7,9 +7,11 @@ import com.tcis.models.card.Variant;
  * Represents a sellable binder that can only contain cards with special
  * (non-Normal) variants.
  *
- * <p>Its price can be set manually by the user, but cannot be lower than the
+ * <p>
+ * Its price can be set manually by the user, but cannot be lower than the
  * total real value of its contents. When sold, it incurs a 10% handling fee
- * on its set price.</p>
+ * on its set price.
+ * </p>
  */
 public class LuxuryBinder extends SellableBinder {
     /**
@@ -72,17 +74,19 @@ public class LuxuryBinder extends SellableBinder {
     /**
      * Calculates the final sale price of the binder.
      *
-     * <p>If a custom price has been set (i.e., is greater than 0), it returns
+     * <p>
+     * If a custom price has been set (i.e., is greater than 0), it returns
      * that price plus a 10% handling fee. Otherwise, it defaults to the total
-     * real value of the cards plus a 10% handling fee.</p>
+     * real value of the cards plus a 10% handling fee.
+     * </p>
      *
      * @return The final sale price of the binder.
      */
     public double calculatePrice() {
         double basePrice = (this.customPrice > 0)
-                           ? this.customPrice
-                           : getTotalCardValue();
-        
+                            ? this.customPrice
+                            : getTotalCardValue();
+
         return basePrice * 1.10;
     }
 }

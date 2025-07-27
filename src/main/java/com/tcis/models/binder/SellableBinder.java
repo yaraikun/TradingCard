@@ -4,10 +4,12 @@ package com.tcis.models.binder;
  * An abstract class that serves as the base for all binder types that can be
  * sold.
  *
- * <p>It provides default implementations for {@code isSellable} (always true)
+ * <p>
+ * It provides default implementations for {@code isSellable} (always true)
  * and {@code canTrade} (always false), as specified in the MCO2 requirements.
  * Using {@code final} prevents subclasses from overriding these fundamental
- * behaviors.</p>
+ * behaviors.
+ * </p>
  */
 public abstract class SellableBinder extends Binder {
 

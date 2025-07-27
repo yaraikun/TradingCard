@@ -4,9 +4,11 @@ package com.tcis.models.card;
  * Represents the fixed set of variants a card can have, along with their value
  * multipliers.
  *
- * <p>Only Rare and Legendary cards can have variants other than Normal. This
+ * <p>
+ * Only Rare and Legendary cards can have variants other than Normal. This
  * enum encapsulates both the display name and the business logic (the
- * multiplier) for each variant type.</p>
+ * multiplier) for each variant type.
+ * </p>
  */
 public enum Variant {
     /**
@@ -43,7 +45,7 @@ public enum Variant {
      * Private constructor for the enum.
      *
      * @param displayName The user-friendly name of the variant.
-     * @param multiplier The value multiplier associated with this variant.
+     * @param multiplier  The value multiplier associated with this variant.
      */
     Variant(String displayName, double multiplier) {
         this.displayName = displayName;

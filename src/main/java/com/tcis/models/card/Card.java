@@ -3,10 +3,12 @@ package com.tcis.models.card;
 /**
  * Represents an immutable card type with its core properties.
  *
- * <p>It encapsulates all fundamental attributes of a card, including its name,
+ * <p>
+ * It encapsulates all fundamental attributes of a card, including its name,
  * value, rarity, and variant. Its constructor is fortified to prevent the
  * creation of invalid card objects, acting as the final gatekeeper for data
- * integrity.</p>
+ * integrity.
+ * </p>
  */
 public class Card {
     /**
@@ -39,8 +41,7 @@ public class Card {
      * @param variant The card's variant. Cannot be null.
      * @throws IllegalArgumentException if any parameter is invalid.
      */
-    public Card(String name, double baseValue, Rarity rarity,
-                Variant variant) {
+    public Card(String name, double baseValue, Rarity rarity, Variant variant) {
         if (name == null || name.trim().isEmpty())
             throw new IllegalArgumentException(
                 "Card name cannot be null or blank.");

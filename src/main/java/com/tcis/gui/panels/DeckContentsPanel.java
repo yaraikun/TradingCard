@@ -1,11 +1,27 @@
 package com.tcis.gui.panels;
 
-import javax.swing.*;
-import java.awt.*;
-
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.GridLayout;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
+
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.DefaultListModel;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.ListSelectionModel;
+import javax.swing.SwingConstants;
 
 import com.tcis.InventorySystem;
 import com.tcis.gui.main.MainFrame;
@@ -15,9 +31,11 @@ import com.tcis.models.deck.Deck;
 /**
  * A JPanel that displays the contents of a single, specific deck.
  *
- * <p>It provides the user interface for adding cards from the main collection
+ * <p>
+ * It provides the user interface for adding cards from the main collection
  * into the deck and removing cards from the deck, displaying the contents of
- * both side-by-side for easy management.</p>
+ * both side-by-side for easy management.
+ * </p>
  */
 public class DeckContentsPanel extends JPanel {
     private final InventorySystem inventory;
@@ -61,7 +79,7 @@ public class DeckContentsPanel extends JPanel {
         collectionCardList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         JScrollPane collectionScrollPane = new JScrollPane(collectionCardList);
         collectionScrollPane.setBorder(
-            BorderFactory.createTitledBorder("Available in Collection"));
+                BorderFactory.createTitledBorder("Available in Collection"));
         listsPanel.add(collectionScrollPane);
 
         add(listsPanel, BorderLayout.CENTER);
@@ -71,7 +89,7 @@ public class DeckContentsPanel extends JPanel {
 
         JButton addCardButton = new JButton("<< Add Selected Card");
         JButton removeCardButton = new JButton("Remove Selected Card >>");
-        
+
         Dimension buttonSize = new Dimension(200, 40);
         addCardButton.setPreferredSize(buttonSize);
         removeCardButton.setPreferredSize(buttonSize);
@@ -108,26 +126,33 @@ public class DeckContentsPanel extends JPanel {
      */
     public void loadDeck(String deckName) {
         this.currentDeck = inventory.findDeck(deckName);
+
         if (currentDeck == null) {
-            JOptionPane.showMessageDialog(mainFrame, "Could not load deck.",
-                "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(
+                mainFrame,
+                "Could not load deck.",
+                "Error",
+                JOptionPane.ERROR_MESSAGE
+            );
             mainFrame.showPanel("deckPanel");
             return;
         }
+
         deckTitleLabel.setText("Managing: " + currentDeck.getName());
         refreshView();
     }
-    
+
     /**
      * Refreshes both card lists by fetching the latest data from the backend.
      */
     private void refreshView() {
         if (currentDeck == null)
             return;
-        
+
         deckListModel.clear();
         ArrayList<Card> deckCards = currentDeck.getCards();
         deckCards.sort(Comparator.comparing(Card::getName));
+
         for (Card card : deckCards)
             deckListModel.addElement(card.getName());
 
@@ -135,19 +160,28 @@ public class DeckContentsPanel extends JPanel {
         ArrayList<Card> collectionCards = inventory.getCardTypes();
         HashMap<String, Integer> counts = inventory.getCardCounts();
         collectionCards.sort(Comparator.comparing(Card::getName));
+
         for (Card card : collectionCards) {
-            int count = counts.getOrDefault(
-                card.getName().toLowerCase(), 0);
-            if (count > 0)
-                collectionListModel.addElement(String.format(
-                    "%s (Available: %d)", card.getName(), count));
+            int count = counts.getOrDefault( card.getName().toLowerCase(), 0);
+
+            if (count > 0) {
+                collectionListModel.addElement(
+                    String.format("%s (Available: %d)", card.getName(), count)
+                );
+            }
         }
-        
+
         JScrollPane deckScrollPane =
             (JScrollPane) deckCardList.getParent().getParent();
-        deckScrollPane.setBorder(BorderFactory.createTitledBorder(
-            "Cards in Deck (" + currentDeck.getCardCount() + "/" +
-            Deck.MAX_CAPACITY + ")"));
+
+        deckScrollPane.setBorder(
+            BorderFactory.createTitledBorder(
+                "Cards in Deck (" +
+                currentDeck.getCardCount() +
+                "/" +
+                Deck.MAX_CAPACITY +
+                ")")
+        );
     }
 
     /**
@@ -155,10 +189,15 @@ public class DeckContentsPanel extends JPanel {
      */
     private void handleAddCard() {
         String selectedValue = collectionCardList.getSelectedValue();
+
         if (selectedValue == null) {
-            JOptionPane.showMessageDialog(this, "Please select a card from " +
-                "the 'Available in Collection' list.", "No Selection",
-                JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(
+                this,
+                "Please select a card from the 'Available in Collection' list.",
+                "No Selection",
+                JOptionPane.WARNING_MESSAGE
+            );
+
             return;
         }
 
@@ -167,13 +206,27 @@ public class DeckContentsPanel extends JPanel {
 
         if (result != 0) {
             String error = "An unknown error occurred.";
-            if (result == 4) error = "This card is already in the deck.";
-            if (result == 3) error = "This deck is full.";
-            if (result == 2) error = "No available copies of this card.";
-            if (result == 1) error = "Card or Deck not found.";
-            JOptionPane.showMessageDialog(this, error, "Error",
-                JOptionPane.ERROR_MESSAGE);
+
+            if (result == 4)
+                error = "This card is already in the deck.";
+
+            if (result == 3)
+                error = "This deck is full.";
+
+            if (result == 2)
+                error = "No available copies of this card.";
+
+            if (result == 1)
+                error = "Card or Deck not found.";
+
+            JOptionPane.showMessageDialog(
+                this,
+                error,
+                "Error",
+                JOptionPane.ERROR_MESSAGE
+            );
         }
+
         refreshView();
     }
 
@@ -184,30 +237,44 @@ public class DeckContentsPanel extends JPanel {
      */
     private void handleRemoveCard() {
         String selectedValue = deckCardList.getSelectedValue();
+
         if (selectedValue == null) {
-            JOptionPane.showMessageDialog(this, "Please select a card from " +
-                "the 'Cards in Deck' list.", "No Selection",
-                JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(
+                this,
+                "Please select a card from the 'Cards in Deck' list.",
+                "No Selection",
+                JOptionPane.WARNING_MESSAGE
+            );
+
             return;
         }
 
         int originalIndex = -1;
         ArrayList<Card> originalCards =
             inventory.findDeck(currentDeck.getName()).getCards();
-        for (int i = 0; i < originalCards.size(); i++)
+
+        for (int i = 0; i < originalCards.size(); i++) {
             if (originalCards.get(i).getName().equals(selectedValue)) {
                 originalIndex = i;
                 break;
             }
+        }
 
         if (originalIndex != -1 &&
-            inventory.removeCardFromDeck(originalIndex, currentDeck.getName())) {
+            inventory.removeCardFromDeck(
+                originalIndex,
+                currentDeck.getName()
+            )
+        ) {
             // Success is silent
         } else {
-            JOptionPane.showMessageDialog(this,
-                "An error occurred while removing the card.", "Error",
+            JOptionPane.showMessageDialog(
+                this,
+                "An error occurred while removing the card.",
+                "Error",
                 JOptionPane.ERROR_MESSAGE);
         }
+
         refreshView();
     }
 }

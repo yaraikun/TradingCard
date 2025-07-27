@@ -7,8 +7,10 @@ import com.tcis.models.card.Rarity;
  * Represents a sellable binder that can only contain Common and Uncommon
  * cards.
  *
- * <p>When sold, its price is the sum of the real values of its cards, with no
- * handling fee applied.</p>
+ * <p>
+ * When sold, its price is the sum of the real values of its cards, with no
+ * handling fee applied.
+ * </p>
  */
 public class PauperBinder extends SellableBinder {
 

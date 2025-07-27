@@ -3,10 +3,12 @@ package com.tcis.models.deck;
 /**
  * Represents a deck that is intended to be sold as a whole unit.
  *
- * <p>This class inherits all the base functionality of a Deck from its
+ * <p>
+ * This class inherits all the base functionality of a Deck from its
  * superclass and provides a concrete implementation for the
  * {@code isSellable} method, defining its specific behavior according to the
- * MCO2 requirements.</p>
+ * MCO2 requirements.
+ * </p>
  */
 public class SellableDeck extends Deck {
 

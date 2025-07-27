@@ -8,10 +8,12 @@ import com.tcis.models.card.Card;
  * An abstract superclass representing the fundamental properties and behaviors
  * of a deck.
  *
- * <p>It enforces a maximum capacity and ensures that all cards within it are
+ * <p>
+ * It enforces a maximum capacity and ensures that all cards within it are
  * unique by name. It defines an abstract method, {@code isSellable()}, which
  * must be implemented by concrete subclasses to specify their selling
- * behavior.</p>
+ * behavior.
+ * </p>
  */
 public abstract class Deck {
     /**
@@ -42,8 +44,7 @@ public abstract class Deck {
     public Deck(String name) {
         if (name == null || name.trim().isEmpty())
             throw new IllegalArgumentException(
-                "Deck name cannot be null or blank."
-            );
+                    "Deck name cannot be null or blank.");
 
         this.name = name.trim();
         this.cards = new ArrayList<>();

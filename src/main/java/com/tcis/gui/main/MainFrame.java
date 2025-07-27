@@ -1,18 +1,32 @@
 package com.tcis.gui.main;
 
-import javax.swing.*;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.CardLayout;
+import java.awt.Container;
+import java.awt.Font;
+
+import javax.swing.BorderFactory;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 
 import com.tcis.InventorySystem;
-import com.tcis.gui.panels.*;
+import com.tcis.gui.panels.BinderContentsPanel;
+import com.tcis.gui.panels.BinderPanel;
+import com.tcis.gui.panels.CollectionPanel;
+import com.tcis.gui.panels.DeckContentsPanel;
+import com.tcis.gui.panels.DeckPanel;
+import com.tcis.gui.panels.MainMenuPanel;
 
 /**
  * The main and only JFrame for the Trading Card Inventory System application.
  *
- * <p>It uses a CardLayout to manage and switch between different JPanels,
+ * <p>
+ * It uses a CardLayout to manage and switch between different JPanels,
  * creating a single-window user experience. It acts as the central navigator
  * for the GUI, owning all the panel instances and controlling which one is
- * visible at any time.</p>
+ * visible at any time.
+ * </p>
  */
 public class MainFrame extends JFrame {
     /**
@@ -79,7 +93,7 @@ public class MainFrame extends JFrame {
 
         JPanel topPanel = new JPanel(new BorderLayout());
         topPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        
+
         JLabel titleLabel = new JLabel("TCIS MCO2");
         titleLabel.setFont(new Font("Arial", Font.BOLD, 20));
 
@@ -101,9 +115,11 @@ public class MainFrame extends JFrame {
     /**
      * Allows other panels to request a switch to a different panel.
      *
-     * <p>This is the core navigation method for the entire GUI. Before showing
+     * <p>
+     * This is the core navigation method for the entire GUI. Before showing
      * a panel, it calls that panel's refresh method to ensure its data is
-     * up-to-date.</p>
+     * up-to-date.
+     * </p>
      *
      * @param panelName The string identifier of the panel to show.
      */
@@ -122,7 +138,7 @@ public class MainFrame extends JFrame {
 
         cardLayout.show(mainPanel, panelName);
     }
-    
+
     /**
      * A specialized method to show the binder contents panel, ensuring it's
      * loaded with the correct binder's data before being displayed.
@@ -152,6 +168,6 @@ public class MainFrame extends JFrame {
      */
     public void updateTotalMoney() {
         totalMoneyLabel.setText(
-            String.format("Total Money: $%.2f", inventory.getTotalMoney()));
+                String.format("Total Money: $%.2f", inventory.getTotalMoney()));
     }
 }

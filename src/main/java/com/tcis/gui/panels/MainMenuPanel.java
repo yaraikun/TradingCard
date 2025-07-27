@@ -1,15 +1,26 @@
 package com.tcis.gui.panels;
 
+import java.awt.BorderLayout;
+import java.awt.Font;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
+
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
+
 import com.tcis.gui.main.MainFrame;
-import javax.swing.*;
-import java.awt.*;
 
 /**
  * A JPanel that serves as the main menu or "home screen" of the application.
  *
- * <p>It contains navigation buttons to access the primary features of the
+ * <p>
+ * It contains navigation buttons to access the primary features of the
  * system. This panel is intended to be the default "card" in the MainFrame's
- * CardLayout.</p>
+ * CardLayout.
+ * </p>
  */
 public class MainMenuPanel extends JPanel {
     /**
@@ -35,7 +46,7 @@ public class MainMenuPanel extends JPanel {
         add(titleLabel, BorderLayout.NORTH);
 
         JPanel buttonPanel = new JPanel(new GridLayout(3, 1, 15, 15));
-        
+
         JButton manageCollectionBtn = new JButton("Manage Collection");
         manageCollectionBtn.setFont(new Font("Arial", Font.BOLD, 16));
 
@@ -56,10 +67,10 @@ public class MainMenuPanel extends JPanel {
         add(centerWrapper, BorderLayout.CENTER);
 
         manageCollectionBtn.addActionListener(
-            e -> mainFrame.showPanel("collectionPanel"));
+                e -> mainFrame.showPanel("collectionPanel"));
         manageBindersBtn.addActionListener(
-            e -> mainFrame.showPanel("binderPanel"));
+                e -> mainFrame.showPanel("binderPanel"));
         manageDecksBtn.addActionListener(
-            e -> mainFrame.showPanel("deckPanel"));
+                e -> mainFrame.showPanel("deckPanel"));
     }
 }

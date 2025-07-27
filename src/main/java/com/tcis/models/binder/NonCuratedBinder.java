@@ -6,8 +6,10 @@ import com.tcis.models.card.Card;
  * Represents a basic, non-specialized binder with no restrictions on its
  * contents.
  *
- * <p>This class serves as the MCO1 equivalent of a binder. It allows any card
- * to be added, permits trading, but cannot be sold as a whole unit.</p>
+ * <p>
+ * This class serves as the MCO1 equivalent of a binder. It allows any card
+ * to be added, permits trading, but cannot be sold as a whole unit.
+ * </p>
  */
 public class NonCuratedBinder extends Binder {
 

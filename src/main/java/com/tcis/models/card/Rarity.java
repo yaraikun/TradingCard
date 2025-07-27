@@ -3,9 +3,11 @@ package com.tcis.models.card;
 /**
  * Represents the fixed set of rarities a card can have.
  *
- * <p>Using an enum provides type safety and a clear, finite list of options.
+ * <p>
+ * Using an enum provides type safety and a clear, finite list of options.
  * This is the single source of truth for all rarity-related data in the
- * system.</p>
+ * system.
+ * </p>
  */
 public enum Rarity {
     /**

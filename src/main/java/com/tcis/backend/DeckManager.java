@@ -10,9 +10,11 @@ import com.tcis.models.deck.SellableDeck;
 /**
  * Manages the lifecycle and contents of all Deck objects.
  *
- * <p>It handles logic for creating, deleting, and modifying different types of
+ * <p>
+ * It handles logic for creating, deleting, and modifying different types of
  * decks, ensuring rules like capacity and card uniqueness are followed. It
- * leverages polymorphism to handle different deck types seamlessly.</p>
+ * leverages polymorphism to handle different deck types seamlessly.
+ * </p>
  */
 public class DeckManager {
     /**
@@ -60,8 +62,10 @@ public class DeckManager {
     /**
      * Creates a new, empty deck of a specific type.
      *
-     * <p>This method acts as a factory, instantiating the correct Deck
-     * subclass. Fails if a deck with the same name already exists.</p>
+     * <p>
+     * This method acts as a factory, instantiating the correct Deck
+     * subclass. Fails if a deck with the same name already exists.
+     * </p>
      *
      * @param name The name for the new deck.
      * @param type The string representing the type of deck to create
@@ -93,7 +97,7 @@ public class DeckManager {
             return false;
         }
     }
-    
+
     /**
      * Deletes a deck and returns all its cards to the main collection.
      *
@@ -106,18 +110,20 @@ public class DeckManager {
             System.out.println("Error: Deck not found.");
             return false;
         }
-        
+
         for (Card card : deckToDelete.getCards())
             collectionManager.increaseCount(card.getName(), 1);
-        
+
         return decks.remove(deckToDelete);
     }
-    
+
     /**
      * Sells a deck if it is sellable.
      *
-     * <p>The sale price is the sum of the real values of all cards inside.
-     * When sold, the deck and its cards are removed permanently.</p>
+     * <p>
+     * The sale price is the sum of the real values of all cards inside.
+     * When sold, the deck and its cards are removed permanently.
+     * </p>
      *
      * @param name The name of the deck to sell.
      * @return The calculated sale price if sold successfully. Returns a value
@@ -132,7 +138,7 @@ public class DeckManager {
 
         if (!deckToSell.isSellable()) {
             System.out.println("Error: This deck type ('" +
-                deckToSell.getClass().getSimpleName() + "') cannot be sold.");
+                    deckToSell.getClass().getSimpleName() + "') cannot be sold.");
             return 0.0;
         }
 
@@ -161,25 +167,24 @@ public class DeckManager {
 
         if (!collectionManager.isCardAvailable(cardName))
             return 2;
-        
+
         if (!deck.addCard(card)) {
-            if (deck.isFull()) {
+            if (deck.isFull())
                 return 3;
-            } else {
+            else
                 return 4;
-            }
         }
 
         collectionManager.decreaseCount(card.getName(), 1);
         return 0;
     }
-    
+
     /**
      * Removes a card from a deck at a specific index and returns it to the
      * main collection.
      *
      * @param cardIndex The index of the card to remove from the deck's list.
-     * @param deckName The name of the deck.
+     * @param deckName  The name of the deck.
      * @return true if the removal was successful, false otherwise.
      */
     public boolean removeCardFromDeck(int cardIndex, String deckName) {
@@ -195,7 +200,7 @@ public class DeckManager {
 
         return false;
     }
-    
+
     /**
      * Gets a defensive copy of the list of all decks.
      *

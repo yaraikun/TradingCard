@@ -7,9 +7,11 @@ import com.tcis.models.card.Variant;
 /**
  * Represents a high-value collector's binder with strict content rules.
  *
- * <p>This binder can only contain Rare or Legendary cards that have a special
+ * <p>
+ * This binder can only contain Rare or Legendary cards that have a special
  * variant (not Normal). This binder can be used for trading but cannot be
- * sold.</p>
+ * sold.
+ * </p>
  */
 public class CollectorBinder extends Binder {
 
@@ -30,8 +32,11 @@ public class CollectorBinder extends Binder {
      *         not Normal.
      */
     public boolean canAddCard(Card card) {
-        boolean isHighRarity = (card.getRarity() == Rarity.RARE ||
-                                card.getRarity() == Rarity.LEGENDARY);
+        boolean isHighRarity = (
+            card.getRarity() == Rarity.RARE ||
+            card.getRarity() == Rarity.LEGENDARY
+        );
+
         boolean isSpecialVariant = (card.getVariant() != Variant.NORMAL);
 
         return isHighRarity && isSpecialVariant;

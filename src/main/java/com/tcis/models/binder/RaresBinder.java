@@ -6,8 +6,10 @@ import com.tcis.models.card.Rarity;
 /**
  * Represents a sellable binder that can only contain Rare and Legendary cards.
  *
- * <p>When sold, its price is the sum of the real values of its cards plus a 10%
- * handling fee.</p>
+ * <p>
+ * When sold, its price is the sum of the real values of its cards plus a 10%
+ * handling fee.
+ * </p>
  */
 public class RaresBinder extends SellableBinder {
 

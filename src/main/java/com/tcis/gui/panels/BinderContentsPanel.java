@@ -1,11 +1,29 @@
 package com.tcis.gui.panels;
 
-import javax.swing.*;
-import java.awt.*;
-
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.GridLayout;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
+
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.DefaultListModel;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
+import javax.swing.SwingConstants;
 
 import com.tcis.InventorySystem;
 import com.tcis.gui.main.MainFrame;
@@ -18,9 +36,11 @@ import com.tcis.models.card.Variant;
 /**
  * A JPanel that displays the contents of a single, specific binder.
  *
- * <p>It provides the user interface for adding cards from the main collection
+ * <p>
+ * It provides the user interface for adding cards from the main collection
  * into the binder, removing cards from the binder, and initiating trades or
- * setting prices for special binder types.</p>
+ * setting prices for special binder types.
+ * </p>
  */
 public class BinderContentsPanel extends JPanel {
     private final InventorySystem inventory;
@@ -64,10 +84,10 @@ public class BinderContentsPanel extends JPanel {
         collectionListModel = new DefaultListModel<>();
         collectionCardList = new JList<>(collectionListModel);
         collectionCardList.setSelectionMode(
-            ListSelectionModel.SINGLE_SELECTION);
+                ListSelectionModel.SINGLE_SELECTION);
         JScrollPane collectionScrollPane = new JScrollPane(collectionCardList);
         collectionScrollPane.setBorder(
-            BorderFactory.createTitledBorder("Available in Collection"));
+                BorderFactory.createTitledBorder("Available in Collection"));
         listsPanel.add(collectionScrollPane);
 
         add(listsPanel, BorderLayout.CENTER);
@@ -79,7 +99,7 @@ public class BinderContentsPanel extends JPanel {
         JButton removeCardButton = new JButton("Remove Selected Card >>");
         tradeButton = new JButton("Trade from Binder...");
         setPriceButton = new JButton("Set Custom Price...");
-        
+
         Dimension buttonSize = new Dimension(200, 40);
         addCardButton.setPreferredSize(buttonSize);
         removeCardButton.setPreferredSize(buttonSize);
@@ -130,9 +150,11 @@ public class BinderContentsPanel extends JPanel {
         this.currentBinder = inventory.findBinder(binderName);
 
         if (currentBinder == null) {
-            JOptionPane.showMessageDialog(mainFrame,
+            JOptionPane.showMessageDialog(
+                mainFrame,
                 "Could not load binder. It may have been deleted.",
-                "Error", JOptionPane.ERROR_MESSAGE);
+                "Error", JOptionPane.ERROR_MESSAGE
+            );
             mainFrame.showPanel("binderPanel");
             return;
         }
@@ -140,7 +162,7 @@ public class BinderContentsPanel extends JPanel {
         binderTitleLabel.setText("Managing: " + currentBinder.getName());
         refreshView();
     }
-    
+
     /**
      * Refreshes both lists and all button states by fetching the latest data
      * from the backend.
@@ -148,7 +170,7 @@ public class BinderContentsPanel extends JPanel {
     private void refreshView() {
         if (currentBinder == null)
             return;
-        
+
         binderListModel.clear();
         ArrayList<Card> binderCards = currentBinder.getCards();
         binderCards.sort(Comparator.comparing(Card::getName));
@@ -163,18 +185,23 @@ public class BinderContentsPanel extends JPanel {
 
         for (Card card : collectionCards) {
             int count = counts.getOrDefault(
-                card.getName().toLowerCase(), 0);
+                    card.getName().toLowerCase(), 0);
 
             if (count > 0)
-                collectionListModel.addElement(String.format(
-                    "%s (Available: %d)", card.getName(), count));
+                collectionListModel.addElement(
+                    String.format("%s (Available: %d)", card.getName(), count)
+                );
         }
-        
-        JScrollPane binderScrollPane =
-            (JScrollPane) binderCardList.getParent().getParent();
+
+        JScrollPane binderScrollPane = (JScrollPane) binderCardList.getParent().getParent();
         binderScrollPane.setBorder(BorderFactory.createTitledBorder(
-            "Cards in Binder (" + currentBinder.getCardCount() + "/" +
-            Binder.MAX_CAPACITY + ")"));
+            "Cards in Binder (" +
+            currentBinder.getCardCount() + 
+            "/" +
+            Binder.MAX_CAPACITY +
+            ")"
+        ));
+
         updateButtonStates();
     }
 
@@ -194,29 +221,41 @@ public class BinderContentsPanel extends JPanel {
         String selectedValue = collectionCardList.getSelectedValue();
 
         if (selectedValue == null) {
-            JOptionPane.showMessageDialog(this,
-                "Please select a card from the 'Available in Collection' " +
-                "list to add.", "No Selection",
-                JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(
+                this,
+                "Please select a card from the 'Available in Collection' list to add.",
+                "No Selection",
+                JOptionPane.WARNING_MESSAGE
+            );
             return;
         }
 
         String cardName = selectedValue.split(" \\(")[0];
         int result = inventory.addCardToBinder(
-            cardName, currentBinder.getName());
+                cardName, currentBinder.getName());
 
-        if (result == 4)
-            JOptionPane.showMessageDialog(this,
+        if (result == 4) {
+            JOptionPane.showMessageDialog(
+                this,
                 "This card is not allowed in this type of binder.",
-                "Rule Violation", JOptionPane.ERROR_MESSAGE);
-        else if (result == 3)
-            JOptionPane.showMessageDialog(this,
-                "This binder is full.", "Error", JOptionPane.ERROR_MESSAGE);
-        else if (result != 0)
-            JOptionPane.showMessageDialog(this,
-                "An error occurred while adding the card.", "Error",
-                JOptionPane.ERROR_MESSAGE);
-        
+                "Rule Violation", JOptionPane.ERROR_MESSAGE
+            );
+        } else if (result == 3) {
+            JOptionPane.showMessageDialog(
+                this,
+                "This binder is full.",
+                "Error",
+                JOptionPane.ERROR_MESSAGE
+            );
+        } else if (result != 0) {
+            JOptionPane.showMessageDialog(
+                this,
+                "An error occurred while adding the card.",
+                "Error",
+                JOptionPane.ERROR_MESSAGE
+            );
+        }
+
         refreshView();
     }
 
@@ -229,9 +268,12 @@ public class BinderContentsPanel extends JPanel {
         String selectedValue = binderCardList.getSelectedValue();
 
         if (selectedValue == null) {
-            JOptionPane.showMessageDialog(this,
-                "Please select a card from the 'Cards in Binder' list to " +
-                "remove.", "No Selection", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(
+                this,
+                "Please select a card from the 'Cards in Binder' list to remove.",
+                "No Selection",
+                JOptionPane.WARNING_MESSAGE
+            );
             return;
         }
 
@@ -240,6 +282,7 @@ public class BinderContentsPanel extends JPanel {
         int originalIndex = -1;
         ArrayList<Card> originalCards =
             inventory.findBinder(currentBinder.getName()).getCards();
+
         for (int i = 0; i < originalCards.size(); i++)
             if (originalCards.get(i).getName().equals(selectedValue)) {
                 originalIndex = i;
@@ -248,12 +291,16 @@ public class BinderContentsPanel extends JPanel {
 
         if (originalIndex != -1 &&
             inventory.removeCardFromBinder(
-                originalIndex, currentBinder.getName())) {
+                originalIndex,
+                currentBinder.getName()
+            )) {
             // Success is silent; the refresh will show the result.
         } else {
-            JOptionPane.showMessageDialog(this,
+            JOptionPane.showMessageDialog(
+                this,
                 "An error occurred while removing the card.", "Error",
-                JOptionPane.ERROR_MESSAGE);
+                JOptionPane.ERROR_MESSAGE
+            );
         }
         refreshView();
     }
@@ -268,15 +315,19 @@ public class BinderContentsPanel extends JPanel {
         if (selectedViewIndex == -1) {
             JOptionPane.showMessageDialog(this,
                 "Please select a card from the binder to trade away.",
-                "No Selection", JOptionPane.WARNING_MESSAGE);
+                "No Selection",
+                JOptionPane.WARNING_MESSAGE
+            );
+
             return;
         }
-        String selectedName = binderListModel.getElementAt(selectedViewIndex);
 
+        String selectedName = binderListModel.getElementAt(selectedViewIndex);
         int outgoingCardIndex = -1;
         Card outgoingCard = null;
         ArrayList<Card> originalCards =
             inventory.findBinder(currentBinder.getName()).getCards();
+
         for (int i = 0; i < originalCards.size(); i++)
             if (originalCards.get(i).getName().equals(selectedName)) {
                 outgoingCardIndex = i;
@@ -285,9 +336,12 @@ public class BinderContentsPanel extends JPanel {
             }
 
         if (outgoingCard == null) {
-            JOptionPane.showMessageDialog(this,
+            JOptionPane.showMessageDialog(
+                this,
                 "Could not find selected card. Please refresh.", "Error",
-                JOptionPane.ERROR_MESSAGE);
+                JOptionPane.ERROR_MESSAGE
+            );
+
             return;
         }
 
@@ -296,91 +350,136 @@ public class BinderContentsPanel extends JPanel {
         JComboBox<Rarity> rarityComboBox = new JComboBox<>(Rarity.values());
         JComboBox<Variant> variantComboBox = new JComboBox<>(Variant.values());
         JTextField valueField = new JTextField();
-        panel.add(new JLabel("Incoming Card Name:")); panel.add(nameField);
-        panel.add(new JLabel("Rarity:")); panel.add(rarityComboBox);
-        panel.add(new JLabel("Variant:")); panel.add(variantComboBox);
-        panel.add(new JLabel("Base Value ($):")); panel.add(valueField);
-        
+        panel.add(new JLabel("Incoming Card Name:"));
+        panel.add(nameField);
+        panel.add(new JLabel("Rarity:"));
+        panel.add(rarityComboBox);
+        panel.add(new JLabel("Variant:"));
+        panel.add(variantComboBox);
+        panel.add(new JLabel("Base Value ($):"));
+        panel.add(valueField);
+
         Runnable updateVariantState = () -> {
             Rarity selectedRarity = (Rarity) rarityComboBox.getSelectedItem();
             boolean isSpecial = selectedRarity == Rarity.RARE ||
                                 selectedRarity == Rarity.LEGENDARY;
             variantComboBox.setEnabled(isSpecial);
+
             if (!isSpecial)
                 variantComboBox.setSelectedItem(Variant.NORMAL);
         };
+
         rarityComboBox.addActionListener(e -> updateVariantState.run());
         updateVariantState.run();
-        
-        int result = JOptionPane.showConfirmDialog(this, panel,
-            "Enter Incoming Card Details", JOptionPane.OK_CANCEL_OPTION,
-            JOptionPane.PLAIN_MESSAGE);
+
+        int result = 
+            JOptionPane.showConfirmDialog(
+                this,
+                panel,
+                "Enter Incoming Card Details",
+                JOptionPane.OK_CANCEL_OPTION,
+                JOptionPane.PLAIN_MESSAGE
+            );
 
         if (result == JOptionPane.OK_OPTION) {
-             try {
+            try {
                 String inName = nameField.getText();
                 Rarity inRarity = (Rarity) rarityComboBox.getSelectedItem();
                 Variant inVariant = (Variant) variantComboBox.getSelectedItem();
                 double inValue = Double.parseDouble(valueField.getText());
-                
-                Card incomingCard = new Card(inName, inValue, inRarity, inVariant);
-                double diff = Math.abs(
-                    outgoingCard.getCalculatedValue() -
-                    incomingCard.getCalculatedValue());
+
+                Card incomingCard =
+                    new Card(inName, inValue, inRarity, inVariant);
+
+                double diff =
+                    Math.abs(
+                        outgoingCard.getCalculatedValue() -
+                        incomingCard.getCalculatedValue()
+                    );
+
                 if (diff >= 1.0) {
-                    int confirm = JOptionPane.showConfirmDialog(this,
-                        String.format("Value difference is $%.2f. This may be "+
-                        "an unfair trade. Proceed?", diff),
-                        "Confirm Unfair Trade", JOptionPane.YES_NO_OPTION);
+                    int confirm = 
+                        JOptionPane.showConfirmDialog(
+                            this,
+                            String.format("Value difference is $%.2f. This may be an unfair trade. Proceed?", diff),
+                            "Confirm Unfair Trade", JOptionPane.YES_NO_OPTION
+                        );
+
                     if (confirm != JOptionPane.YES_OPTION) {
                         System.out.println("Trade canceled by user.");
                         return;
                     }
                 }
 
-                if (inventory.performTrade(currentBinder.getName(),
-                    outgoingCardIndex, incomingCard))
-                    JOptionPane.showMessageDialog(this, "Trade successful!",
-                        "Success", JOptionPane.INFORMATION_MESSAGE);
-                else
-                    JOptionPane.showMessageDialog(this,
-                        "Trade failed. Check console for details.", "Error",
-                        JOptionPane.ERROR_MESSAGE);
-                
+                if (inventory.performTrade(currentBinder.getName(), 
+                    outgoingCardIndex,
+                        incomingCard)) {
+                    JOptionPane.showMessageDialog(
+                        this,
+                        "Trade successful!",
+                        "Success", 
+                        JOptionPane.INFORMATION_MESSAGE
+                    );
+                } else {
+                    JOptionPane.showMessageDialog(
+                        this,
+                        "Trade failed. Check console for details.",
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE
+                    );
+                }
+
                 refreshView();
-             } catch (Exception e) {
-                 JOptionPane.showMessageDialog(this,
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(
+                    this,
                     "Invalid trade details provided: " + e.getMessage(),
-                    "Input Error", JOptionPane.ERROR_MESSAGE);
-             }
+                    "Input Error",
+                    JOptionPane.ERROR_MESSAGE
+                );
+            }
         }
     }
-    
+
     /**
      * Handles setting the price for a Luxury Binder via an input dialog.
      */
     private void handleSetPrice() {
         if (currentBinder instanceof LuxuryBinder) {
             LuxuryBinder luxuryBinder = (LuxuryBinder) currentBinder;
-            String priceStr = JOptionPane.showInputDialog(this,
-                "Enter the custom price for this binder:", "Set Custom Price",
-                JOptionPane.PLAIN_MESSAGE);
+            String priceStr = 
+                JOptionPane.showInputDialog(
+                    this,
+                    "Enter the custom price for this binder:",
+                    "Set Custom Price",
+                    JOptionPane.PLAIN_MESSAGE
+                );
+
             if (priceStr != null) {
                 try {
                     double price = Double.parseDouble(priceStr);
                     if (luxuryBinder.setPrice(price)) {
-                        JOptionPane.showMessageDialog(this,
-                            "Price set successfully.", "Success",
-                            JOptionPane.INFORMATION_MESSAGE);
+                        JOptionPane.showMessageDialog(
+                            this,
+                            "Price set successfully.",
+                            "Success",
+                            JOptionPane.INFORMATION_MESSAGE
+                        );
                     } else {
-                        JOptionPane.showMessageDialog(this, "Price cannot be "+
-                            "lower than the total value of the cards inside.",
-                            "Error", JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(
+                            this, 
+                            "Price cannot be lower than the total value of the cards inside.",
+                            "Error", 
+                            JOptionPane.ERROR_MESSAGE
+                        );
                     }
                 } catch (NumberFormatException e) {
-                    JOptionPane.showMessageDialog(this,
-                        "Please enter a valid number.", "Input Error",
-                        JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(
+                        this,
+                        "Please enter a valid number.",
+                        "Input Error",
+                        JOptionPane.ERROR_MESSAGE
+                    );
                 }
             }
         }

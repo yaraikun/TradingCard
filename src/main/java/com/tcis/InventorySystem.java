@@ -17,11 +17,13 @@ import com.tcis.models.deck.Deck;
  * Acts as a Facade for the entire backend system and the main controller for
  * the application.
  *
- * <p>The GUI layer interacts exclusively with this class, which then delegates
+ * <p>
+ * The GUI layer interacts exclusively with this class, which then delegates
  * requests to the appropriate manager (CollectionManager, BinderManager,
  * DeckManager). This decouples the UI from the backend's internal
  * implementation and manages the application's overall state, such as the
- * player's total money.</p>
+ * player's total money.
+ * </p>
  */
 public class InventorySystem {
     /**
@@ -88,10 +90,12 @@ public class InventorySystem {
      */
     public boolean sellCardFromCollection(String cardName) {
         Card card = collectionManager.findCard(cardName);
+
         if (card != null && collectionManager.sellCard(cardName)) {
             this.totalMoney += card.getCalculatedValue();
             return true;
         }
+
         return false;
     }
 
@@ -104,10 +108,12 @@ public class InventorySystem {
      */
     public boolean sellBinder(String binderName) {
         double price = binderManager.sellBinder(binderName);
+
         if (price > 0) { // sellBinder returns <= 0 on failure
             this.totalMoney += price;
             return true;
         }
+
         return false;
     }
 
@@ -120,10 +126,12 @@ public class InventorySystem {
      */
     public boolean sellDeck(String deckName) {
         double price = deckManager.sellDeck(deckName);
+
         if (price > 0) { // sellDeck returns <= 0 on failure
             this.totalMoney += price;
             return true;
         }
+
         return false;
     }
 
@@ -172,7 +180,7 @@ public class InventorySystem {
     /**
      * Delegates the request to add a card to a binder to the BinderManager.
      *
-     * @param cardName The name of the card to move.
+     * @param cardName   The name of the card to move.
      * @param binderName The name of the target binder.
      * @return An integer status code representing the outcome.
      */
@@ -183,7 +191,7 @@ public class InventorySystem {
     /**
      * Delegates the request to remove a card from a binder to the BinderManager.
      *
-     * @param cardIndex The index of the card to remove.
+     * @param cardIndex  The index of the card to remove.
      * @param binderName The name of the binder.
      * @return true if the removal was successful, false otherwise.
      */
@@ -194,15 +202,15 @@ public class InventorySystem {
     /**
      * Delegates a trade request to the BinderManager.
      *
-     * @param binderName The name of the binder where the trade occurs.
+     * @param binderName        The name of the binder where the trade occurs.
      * @param outgoingCardIndex The index of the card being given up.
-     * @param incomingCard The new Card object being received.
+     * @param incomingCard      The new Card object being received.
      * @return true if the trade was successful, false otherwise.
      */
     public boolean performTrade(String binderName, int outgoingCardIndex, Card incomingCard) {
         return binderManager.performTrade(binderName, outgoingCardIndex, incomingCard);
     }
-    
+
     // --- Deck Delegation Methods ---
 
     /**
@@ -260,21 +268,21 @@ public class InventorySystem {
      * Delegates the request to remove a card from a deck to the DeckManager.
      *
      * @param cardIndex The index of the card to remove.
-     * @param deckName The name of the deck.
+     * @param deckName  The name of the deck.
      * @return true if the removal was successful, false otherwise.
      */
     public boolean removeCardFromDeck(int cardIndex, String deckName) {
         return deckManager.removeCardFromDeck(cardIndex, deckName);
     }
-    
+
     // --- Collection Delegation Methods ---
-    
+
     /**
      * Delegates the request to add a new card type to the CollectionManager.
      *
-     * @param name The name for the new card.
-     * @param value The base value for the new card.
-     * @param rarity The rarity for the new card.
+     * @param name    The name for the new card.
+     * @param value   The base value for the new card.
+     * @param rarity  The rarity for the new card.
      * @param variant The variant for the new card.
      * @return true if the card was successfully added, false otherwise.
      */
@@ -295,7 +303,7 @@ public class InventorySystem {
     /**
      * Delegates the request to increase a card's count to the CollectionManager.
      *
-     * @param name The name of the card.
+     * @param name   The name of the card.
      * @param amount The positive integer amount to increase by.
      * @return true if the count was successfully updated, false otherwise.
      */
@@ -306,7 +314,7 @@ public class InventorySystem {
     /**
      * Delegates the request to decrease a card's count to the CollectionManager.
      *
-     * @param name The name of the card.
+     * @param name   The name of the card.
      * @param amount The positive integer amount to decrease by.
      * @return true if the count was successfully updated, false otherwise.
      */
@@ -333,7 +341,8 @@ public class InventorySystem {
     }
 
     /**
-     * Delegates the request to check if a card is available to the CollectionManager.
+     * Delegates the request to check if a card is available to the
+     * CollectionManager.
      *
      * @param name The name of the card.
      * @return true if the card count is greater than 0, false otherwise.

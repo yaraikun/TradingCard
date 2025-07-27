@@ -1,10 +1,28 @@
 package com.tcis.gui.panels;
 
-import javax.swing.*;
-import java.awt.*;
-
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.GridLayout;
 import java.util.ArrayList;
 import java.util.Comparator;
+
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.DefaultListModel;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
+import javax.swing.SwingConstants;
 
 import com.tcis.InventorySystem;
 import com.tcis.gui.main.MainFrame;
@@ -14,9 +32,11 @@ import com.tcis.models.deck.Deck;
 /**
  * A JPanel that serves as the main screen for managing all decks.
  *
- * <p>It displays a list of existing decks and provides options to create,
+ * <p>
+ * It displays a list of existing decks and provides options to create,
  * view, sell, or delete them. This panel is intended to be a "card" in the
- * MainFrame's CardLayout.</p>
+ * MainFrame's CardLayout.
+ * </p>
  */
 public class DeckPanel extends JPanel {
     private final InventorySystem inventory;
@@ -52,7 +72,7 @@ public class DeckPanel extends JPanel {
 
         JPanel actionButtonPanel = new JPanel();
         actionButtonPanel.setLayout(
-            new BoxLayout(actionButtonPanel, BoxLayout.Y_AXIS));
+                new BoxLayout(actionButtonPanel, BoxLayout.Y_AXIS));
 
         JButton createBtn = new JButton("Create Deck...");
         viewButton = new JButton("View Contents...");
@@ -72,7 +92,7 @@ public class DeckPanel extends JPanel {
         viewButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         sellButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         deleteButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        
+
         actionButtonPanel.add(Box.createVerticalGlue());
         actionButtonPanel.add(createBtn);
         actionButtonPanel.add(Box.createRigidArea(new Dimension(0, 10)));
@@ -82,7 +102,7 @@ public class DeckPanel extends JPanel {
         actionButtonPanel.add(Box.createRigidArea(new Dimension(0, 10)));
         actionButtonPanel.add(deleteButton);
         actionButtonPanel.add(Box.createVerticalGlue());
-        
+
         JPanel actionWrapperPanel = new JPanel(new BorderLayout());
         actionWrapperPanel.add(actionButtonPanel, BorderLayout.CENTER);
         add(actionWrapperPanel, BorderLayout.EAST);
@@ -115,12 +135,12 @@ public class DeckPanel extends JPanel {
         for (Deck deck : decks) {
             String type = deck.isSellable() ? "Sellable" : "Normal";
             deckListModel.addElement(String.format("%s (%s) [%d/%d]",
-                deck.getName(), type, deck.getCardCount(), Deck.MAX_CAPACITY));
+                    deck.getName(), type, deck.getCardCount(), Deck.MAX_CAPACITY));
         }
 
         if (selectedIndex >= 0 && selectedIndex < deckListModel.getSize())
             deckList.setSelectedIndex(selectedIndex);
-        
+
         updateButtonStates();
     }
 
@@ -150,7 +170,7 @@ public class DeckPanel extends JPanel {
     private void handleCreate() {
         JPanel panel = new JPanel(new GridLayout(2, 2, 5, 5));
         JTextField nameField = new JTextField();
-        String[] deckTypes = {"Normal", "Sellable"};
+        String[] deckTypes = { "Normal", "Sellable" };
         JComboBox<String> typeComboBox = new JComboBox<>(deckTypes);
 
         panel.add(new JLabel("Deck Name:"));
@@ -159,8 +179,8 @@ public class DeckPanel extends JPanel {
         panel.add(typeComboBox);
 
         int result = JOptionPane.showConfirmDialog(mainFrame, panel,
-            "Create New Deck", JOptionPane.OK_CANCEL_OPTION,
-            JOptionPane.PLAIN_MESSAGE);
+                "Create New Deck", JOptionPane.OK_CANCEL_OPTION,
+                JOptionPane.PLAIN_MESSAGE);
 
         if (result == JOptionPane.OK_OPTION) {
             String name = nameField.getText();
@@ -168,13 +188,13 @@ public class DeckPanel extends JPanel {
 
             if (inventory.createDeck(name, type)) {
                 JOptionPane.showMessageDialog(mainFrame, "Deck '" + name +
-                    "' created successfully.", "Success",
-                    JOptionPane.INFORMATION_MESSAGE);
+                        "' created successfully.", "Success",
+                        JOptionPane.INFORMATION_MESSAGE);
                 refreshView();
             } else {
                 JOptionPane.showMessageDialog(mainFrame, "Failed to create " +
-                    "deck. The name might be blank or already exist.",
-                    "Error", JOptionPane.ERROR_MESSAGE);
+                        "deck. The name might be blank or already exist.",
+                        "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
     }
@@ -201,24 +221,23 @@ public class DeckPanel extends JPanel {
 
         String deckName = selectedValue.split(" \\(")[0];
         int choice = JOptionPane.showConfirmDialog(
-            mainFrame,
-            "Delete deck '" + deckName + "'? All cards will be returned " +
-            "to your collection.",
-            "Confirm Deletion",
-            JOptionPane.YES_NO_OPTION,
-            JOptionPane.WARNING_MESSAGE
-        );
+                mainFrame,
+                "Delete deck '" + deckName + "'? All cards will be returned " +
+                        "to your collection.",
+                "Confirm Deletion",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.WARNING_MESSAGE);
 
         if (choice == JOptionPane.YES_OPTION) {
             if (inventory.deleteDeck(deckName)) {
                 JOptionPane.showMessageDialog(mainFrame,
-                    "Deck deleted successfully.", "Success",
-                    JOptionPane.INFORMATION_MESSAGE);
+                        "Deck deleted successfully.", "Success",
+                        JOptionPane.INFORMATION_MESSAGE);
                 refreshView();
             } else {
                 JOptionPane.showMessageDialog(mainFrame,
-                    "Failed to delete the deck.", "Error",
-                    JOptionPane.ERROR_MESSAGE);
+                        "Failed to delete the deck.", "Error",
+                        JOptionPane.ERROR_MESSAGE);
             }
         }
     }
@@ -239,26 +258,25 @@ public class DeckPanel extends JPanel {
         double price = 0;
         for (Card card : deck.getCards())
             price += card.getCalculatedValue();
-        
+
         int choice = JOptionPane.showConfirmDialog(
-            mainFrame,
-            String.format("Sell deck '%s' for a total of $%.2f? This " +
-            "action is permanent.", deckName, price),
-            "Confirm Sale",
-            JOptionPane.YES_NO_OPTION
-        );
+                mainFrame,
+                String.format("Sell deck '%s' for a total of $%.2f? This " +
+                        "action is permanent.", deckName, price),
+                "Confirm Sale",
+                JOptionPane.YES_NO_OPTION);
 
         if (choice == JOptionPane.YES_OPTION) {
             if (inventory.sellDeck(deckName)) {
                 JOptionPane.showMessageDialog(mainFrame,
-                    "Deck sold successfully!", "Success",
-                    JOptionPane.INFORMATION_MESSAGE);
+                        "Deck sold successfully!", "Success",
+                        JOptionPane.INFORMATION_MESSAGE);
                 refreshView();
                 mainFrame.updateTotalMoney();
             } else {
                 JOptionPane.showMessageDialog(mainFrame,
-                    "Failed to sell the deck.", "Error",
-                    JOptionPane.ERROR_MESSAGE);
+                        "Failed to sell the deck.", "Error",
+                        JOptionPane.ERROR_MESSAGE);
             }
         }
     }
