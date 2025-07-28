@@ -387,7 +387,7 @@ Deck o-- "0..10" Card : contains
 
 ### 🔗 Useful Links
 
-* **UML Diagram (.drawio)**
+* [**UML Diagram (Mermaid)**](https://www.mermaidchart.com/app/projects/b3278037-ee25-46c3-9e8f-1722a1ad8d48/diagrams/cebf48d7-ebe7-4ea6-bd0d-66ce6438cb1a/version/v0.1/edit)
 
 ---
 
