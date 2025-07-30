@@ -349,7 +349,7 @@ public class CollectionPanel extends JPanel {
                     return;
                 }
                 int choice = JOptionPane.showConfirmDialog(mainFrame,
-                String.format("Sell %d '%s' for $%.2f?",
+                String.format("Sell %d '%s' for $%.2f each?",
                         amount, cardName, cardToSell.getCalculatedValue()),
                 "Confirm Sale", JOptionPane.YES_NO_OPTION);
 
