@@ -337,23 +337,41 @@ public class CollectionPanel extends JPanel {
         if (cardToSell == null)
             return;
 
-        int choice = JOptionPane.showConfirmDialog(mainFrame,
-                String.format("Sell one '%s' for $%.2f?",
-                        cardName, cardToSell.getCalculatedValue()),
+        String amountStr = JOptionPane.showInputDialog(
+                    mainFrame, "Enter amount:");
+        if (amountStr != null)
+            try {
+                int amount = Integer.parseInt(amountStr);
+                if (amount <= 0) {
+                    JOptionPane.showMessageDialog(mainFrame,
+                            "Amount must be a positive number.", "Input Error",
+                            JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                int choice = JOptionPane.showConfirmDialog(mainFrame,
+                String.format("Sell %d '%s' for $%.2f?",
+                        amount, cardName, cardToSell.getCalculatedValue()),
                 "Confirm Sale", JOptionPane.YES_NO_OPTION);
 
-        if (choice == JOptionPane.YES_OPTION) {
-            if (inventory.sellCardFromCollection(cardName)) {
+                if (choice == JOptionPane.YES_OPTION) {
+                    if (inventory.sellCardFromCollection(cardName, amount)) {
+                        JOptionPane.showMessageDialog(mainFrame,
+                                "Card sold successfully!", "Success",
+                                JOptionPane.INFORMATION_MESSAGE);
+                        refreshView();
+                        mainFrame.updateTotalMoney();
+                    } else {
+                        JOptionPane.showMessageDialog(mainFrame, "Failed to sell " +
+                                "card. Not enough copies available.", "Error",
+                                JOptionPane.ERROR_MESSAGE);
+                    }
+                }
+            } catch (NumberFormatException e) {
                 JOptionPane.showMessageDialog(mainFrame,
-                        "Card sold successfully!", "Success",
-                        JOptionPane.INFORMATION_MESSAGE);
-                refreshView();
-                mainFrame.updateTotalMoney();
-            } else {
-                JOptionPane.showMessageDialog(mainFrame, "Failed to sell " +
-                        "card. Not enough copies available.", "Error",
+                        "Please enter a valid whole number.", "Input Error",
                         JOptionPane.ERROR_MESSAGE);
             }
-        }
+
+       
     }
 }

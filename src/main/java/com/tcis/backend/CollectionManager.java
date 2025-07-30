@@ -143,8 +143,8 @@ public class CollectionManager {
      * @return true if one copy of the card was successfully removed, false
      *         otherwise.
      */
-    public boolean sellCard(String cardName) {
-        return decreaseCount(cardName, 1);
+    public boolean sellCard(String cardName, int amount) {
+        return decreaseCount(cardName, amount);
     }
 
     /**

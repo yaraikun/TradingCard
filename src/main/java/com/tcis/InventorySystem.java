@@ -88,11 +88,11 @@ public class InventorySystem {
      * @param cardName The name of the card to sell.
      * @return true if the sale was successful, false otherwise.
      */
-    public boolean sellCardFromCollection(String cardName) {
+    public boolean sellCardFromCollection(String cardName, int amount) {
         Card card = collectionManager.findCard(cardName);
 
-        if (card != null && collectionManager.sellCard(cardName)) {
-            this.totalMoney += card.getCalculatedValue();
+        if (card != null && collectionManager.sellCard(cardName, amount)) {
+            this.totalMoney += card.getCalculatedValue() * amount;
             return true;
         }
 
