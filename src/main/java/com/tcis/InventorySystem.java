@@ -86,6 +86,7 @@ public class InventorySystem {
      * real value is added to the player's total money.
      *
      * @param cardName The name of the card to sell.
+     * @param amount   The positive integer amount to sell card by.
      * @return true if the sale was successful, false otherwise.
      */
     public boolean sellCardFromCollection(String cardName, int amount) {

@@ -140,6 +140,7 @@ public class CollectionManager {
      * </p>
      *
      * @param cardName The name of the card to sell.
+     * @param amount   The positive integer amount to sell card by.
      * @return true if one copy of the card was successfully removed, false
      *         otherwise.
      */
